@@ -18,7 +18,7 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            Overview
+            📊 Overview
           </NavLink>
         </li>
         <hr />
@@ -30,7 +30,7 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            Orders
+            📦 Orders
           </NavLink>
         </li>
         <hr />
@@ -42,7 +42,7 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            Products
+            🛋️ Products
           </NavLink>
         </li>
         <hr />
@@ -54,7 +54,7 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            Customers
+            👥 Customers
           </NavLink>
         </li>
         <hr />
@@ -66,11 +66,13 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            Analytics
+            📈 Analytics
           </NavLink>
         </li>
-        <hr />
-        <li>
+      </ul>
+
+      <ul className="nav nav-pills flex-column  text-center">
+        <li className="nav-item">
           <NavLink
             to={"settings"}
             style={{ color: "white", textDecoration: "none" }}
@@ -78,13 +80,12 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            Settings
+            ⚙️ Settings
           </NavLink>
         </li>
       </ul>
-
       <hr />
-      <button className="btn btn-outline-light">Log out</button>
+      <button className="btn btn-outline-light mt-3">Log out</button>
     </div>
   );
 }
