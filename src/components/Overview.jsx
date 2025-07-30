@@ -13,42 +13,50 @@ function Overview() {
       <div className="row mt-4 alturaOverview">
         <div className="col border rounded shadow me-3 p-4">
           <h3>Orders</h3>
-          <div className="row">
-            <div className="col">
-              <ul>
-                <li>Order 1</li>
-                <li>Order 2</li>
-                <li>Order 3</li>
-                <li>Order 4</li>
-                <li>Order 5</li>
-              </ul>
+          <div className="list-group">
+            <div className="d-flex justify-content-between align-items-center py-3 border-bottom">
+              <span className="text-muted">#orderId</span>
+              <span>Nombre persona</span>
+              <span className="badge rounded-pill text-bg-success">
+                Delivered
+              </span>
+              <span className="fw-semibold">USD 1500</span>
             </div>
-            <div className="col">
-              <ul>
-                <li>Name 1</li>
-                <li>Name 2</li>
-                <li>Name 3</li>
-                <li>Name 4</li>
-                <li>Name 5</li>
-              </ul>
+
+            <div className="d-flex justify-content-between align-items-center py-3 border-bottom">
+              <span className="text-muted">#orderId</span>
+              <span>Nombre persona</span>
+              <span className="badge rounded-pill text-bg-warning text-dark">
+                Processing
+              </span>
+              <span className="fw-semibold">USD 1500</span>
             </div>
-            <div className="col">
-              <ul>
-                <li>Pending</li>
-                <li>Shipped</li>
-                <li>Delivered</li>
-                <li>Cancelled</li>
-                <li>Returned</li>
-              </ul>
+
+            <div className="d-flex justify-content-between align-items-center py-3 border-bottom">
+              <span className="text-muted">#orderId</span>
+              <span>Nombre persona</span>
+              <span className="badge rounded-pill text-bg-primary">
+                Shipped
+              </span>
+              <span className="fw-semibold">USD 1500</span>
             </div>
-            <div className="col">
-              <ul>
-                <li>$100</li>
-                <li>$200</li>
-                <li>$300</li>
-                <li>$400</li>
-                <li>$500</li>
-              </ul>
+
+            <div className="d-flex justify-content-between align-items-center py-3 border-bottom">
+              <span className="text-muted">#orderId</span>
+              <span>Nombre persona</span>
+              <span className="badge rounded-pill text-bg-success">
+                Delivered
+              </span>
+              <span className="fw-semibold">USD 1500</span>
+            </div>
+
+            <div className="d-flex justify-content-between align-items-center py-3">
+              <span className="text-muted">#orderId</span>
+              <span>Nombre persona</span>
+              <span className="badge rounded-pill text-bg-warning text-dark">
+                Processing
+              </span>
+              <span className="fw-semibold">USD 1500</span>
             </div>
           </div>
         </div>
@@ -57,34 +65,41 @@ function Overview() {
           ESCRIBIR ACA
         </div>
         <div className="col border rounded shadow p-4">
-          <h3>Customers</h3>
-          <div className="row">
-            <div className="col-4">
-              <ul>
-                <li>Name 1</li>
-                <li>Name 2</li>
-                <li>Name 3</li>
-                <li>Name 4</li>
-                <li>Name 5</li>
-              </ul>
+          <h3>Messages</h3>
+          <div className="d-flex p-3 border-bottom">
+            <div className="flex-grow-1">
+              <div className="d-flex justify-content-between">
+                <strong>Nombre persona</strong>
+                <small className="text-muted">12 min ago</small>
+              </div>
+              <div className="text-muted">
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                Reiciendis, vel?
+              </div>
             </div>
-            <div className="col-4">
-              <ul>
-                <li>Message1</li>
-                <li>Message2</li>
-                <li>Message3</li>
-                <li>Message4</li>
-                <li>Message5</li>
-              </ul>
+          </div>
+          <div className="d-flex p-3 border-bottom">
+            <div className="flex-grow-1">
+              <div className="d-flex justify-content-between">
+                <strong>Nombre persona</strong>
+                <small className="text-muted">12 min ago</small>
+              </div>
+              <div className="text-muted">
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                Reiciendis, vel?
+              </div>
             </div>
-            <div className="col-4">
-              <ul>
-                <li>Id1</li>
-                <li>Id2</li>
-                <li>Id3</li>
-                <li>Id4</li>
-                <li>Id5</li>
-              </ul>
+          </div>
+          <div className="d-flex p-3 border-bottom">
+            <div className="flex-grow-1">
+              <div className="d-flex justify-content-between">
+                <strong>Nombre persona</strong>
+                <small className="text-muted">12 min ago</small>
+              </div>
+              <div className="text-muted">
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                Reiciendis, vel?
+              </div>
             </div>
           </div>
         </div>

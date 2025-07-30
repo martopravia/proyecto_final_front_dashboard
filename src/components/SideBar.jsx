@@ -7,9 +7,9 @@ function SideBar() {
       className="d-flex flex-column flex-shrink-0 p-3 text-bg-dark vh-100"
       style={{ width: "280px" }}
     >
-      <span className="fs-4 text-center">Sidebar</span>
+      <span className="fs-4 text-center fw-semibold">STUDIO NÖRA</span>
       <hr />
-      <ul className="nav nav-pills flex-column mb-auto ms-5">
+      <ul className="nav nav-pills flex-column mb-auto text-center">
         <li className="nav-item">
           <NavLink
             to={""}
