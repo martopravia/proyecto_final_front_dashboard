@@ -5,7 +5,8 @@ function Overview() {
     <div className="container-fluid">
       <div className="row mt-4 alturaOverview">
         <div className="col border rounded shadow me-3 p-4 ">
-          <h3>Algo</h3>
+          <h3>Sales</h3>
+          <img src="src/img/fotoGrafifca.png" alt="" />
         </div>
         <div className="col border rounded shadow p-4">ESCRIBIR ACA</div>
       </div>
@@ -56,8 +57,36 @@ function Overview() {
           ESCRIBIR ACA
         </div>
         <div className="col border rounded shadow p-4">
-          <h3>Sales?</h3>
-          ESCRIBIR ACA
+          <h3>Customers</h3>
+          <div className="row">
+            <div className="col-4">
+              <ul>
+                <li>Name 1</li>
+                <li>Name 2</li>
+                <li>Name 3</li>
+                <li>Name 4</li>
+                <li>Name 5</li>
+              </ul>
+            </div>
+            <div className="col-4">
+              <ul>
+                <li>Message1</li>
+                <li>Message2</li>
+                <li>Message3</li>
+                <li>Message4</li>
+                <li>Message5</li>
+              </ul>
+            </div>
+            <div className="col-4">
+              <ul>
+                <li>Id1</li>
+                <li>Id2</li>
+                <li>Id3</li>
+                <li>Id4</li>
+                <li>Id5</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
