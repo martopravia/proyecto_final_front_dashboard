@@ -4,7 +4,7 @@ import { NavLink } from "react-router";
 function SideBar() {
   return (
     <div
-      className="d-flex flex-column flex-shrink-0 p-3 text-bg-dark vh-100"
+      className="d-flex flex-column flex-shrink-0 p-3 side-bar text-white vh-100"
       style={{ width: "280px" }}
     >
       <span className="fs-4 text-center">Sidebar</span>

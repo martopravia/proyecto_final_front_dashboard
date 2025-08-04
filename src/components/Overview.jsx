@@ -1,92 +1,195 @@
 import React from "react";
+import { Link } from "react-router";
 
 function Overview() {
+  const orders = [
+    {
+      id: "#6657",
+      name: "Roberto Díaz",
+      status: "Delivered",
+      amount: "$540.65",
+    },
+    {
+      id: "#6583",
+      name: "María del Monte",
+      status: "Processing",
+      amount: "$3260.50",
+    },
+    {
+      id: "#6489",
+      name: "Julián Pérez",
+      status: "Shipped",
+      amount: "$1080.56",
+    },
+    {
+      id: "#6655",
+      name: "Natalia Rodriguez",
+      status: "Delivered",
+      amount: "$5536.20",
+    },
+    {
+      id: "#6671",
+      name: "Mirtha Legrand",
+      status: "Processing",
+      amount: "$17800",
+    },
+  ];
+
+  const topSelling = [
+    {
+      name: "Nordic Chair",
+      sold: 12,
+    },
+    {
+      name: "Cedar Table",
+
+      sold: 9,
+    },
+    {
+      name: "Pine Bookshelf",
+
+      sold: 7,
+    },
+  ];
+
+  const getStatusStyle = (status) => {
+    const base = "px-3 py-1 rounded-full text-sm font-medium";
+    switch (status) {
+      case "Delivered":
+        return `${base} bg-success bg-opacity-25 text-success`;
+      case "Processing":
+        return `${base} bg-warning bg-opacity-25 text-warning`;
+      case "Shipped":
+        return `${base} bg-primary bg-opacity-25 text-primary`;
+      default:
+        return `${base} bg-secondary bg-opacity-25 text-secondary`;
+    }
+  };
+
   return (
     <div className="container-fluid">
-      <div className="row mt-4 alturaOverview">
-        <div className="col border rounded shadow me-3 p-4 ">
-          <h3>Sales</h3>
-          <img src="src/img/fotoGrafifca.png" alt="" />
+      <div className="row alturaOverview">
+        <div className="col me-3 border rounded shadow p-4 bg-white">
+          <h5 className="fw-bold mb-4 fs-4">Today's Sales</h5>
+          <img
+            src="src/img/fotoGrafifca.png"
+            alt="Sales graph"
+            className="img-fluid rounded"
+          />
         </div>
-        <div className="col border rounded shadow p-4">ESCRIBIR ACA</div>
+
+        <div className="col border rounded shadow p-4 bg-white">
+          <h5 className="fw-bold mb-4 fs-4">Top Selling</h5>
+          <div className="d-flex flex-column gap-4">
+            {topSelling.map((item, index) => (
+              <div key={index} className="d-flex align-items-center">
+                <img
+                  src={`https://picsum.photos/seed/customer${
+                    index * 2 - 1
+                  }/40/40`}
+                  alt={item.name}
+                  className="rounded-circle me-3"
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    objectFit: "cover",
+                  }}
+                />
+                <div className="flex-grow-1">
+                  <div className="fw-semibold fs-5">{item.name}</div>
+                  <div className="text-muted fs-6">{item.sold} units sold</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
+
       <div className="row mt-4 alturaOverview">
-        <div className="col border rounded shadow me-3 p-4">
-          <h3>Orders</h3>
-          <div className="row">
-            <div className="col">
-              <ul>
-                <li>Order 1</li>
-                <li>Order 2</li>
-                <li>Order 3</li>
-                <li>Order 4</li>
-                <li>Order 5</li>
-              </ul>
-            </div>
-            <div className="col">
-              <ul>
-                <li>Name 1</li>
-                <li>Name 2</li>
-                <li>Name 3</li>
-                <li>Name 4</li>
-                <li>Name 5</li>
-              </ul>
-            </div>
-            <div className="col">
-              <ul>
-                <li>Pending</li>
-                <li>Shipped</li>
-                <li>Delivered</li>
-                <li>Cancelled</li>
-                <li>Returned</li>
-              </ul>
-            </div>
-            <div className="col">
-              <ul>
-                <li>$100</li>
-                <li>$200</li>
-                <li>$300</li>
-                <li>$400</li>
-                <li>$500</li>
-              </ul>
-            </div>
+        <div className="col border rounded shadow me-3 p-4 bg-white">
+          <h5 className="fw-bold mb-4 fs-4">Orders</h5>
+          <div className="table-responsive">
+            <table className="table table-borderless align-middle fs-6">
+              <thead>
+                <tr className="text-muted">
+                  <th>Order ID</th>
+                  <th>Name</th>
+                  <th>Status</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order, index) => (
+                  <tr key={index}>
+                    <td>
+                      <Link
+                        to={`/admin/orders/${order.id}`}
+                        className="text-decoration-none text-primary fw-semibold"
+                      >
+                        {order.id}
+                      </Link>
+                    </td>
+                    <td className="d-flex align-items-center mb-2">
+                      <img
+                        src={`https://picsum.photos/seed/customer${index}/40/40`}
+                        alt="avatar"
+                        className="rounded-circle me-2"
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          objectFit: "cover",
+                        }}
+                      />
+                      {order.name}
+                    </td>
+                    <td>
+                      <span className={getStatusStyle(order.status)}>
+                        {order.status}
+                      </span>
+                    </td>
+                    <td>{order.amount}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
-        <div className="col border rounded shadow me-3 p-4">
-          <h3>Analytics</h3>
-          ESCRIBIR ACA
+
+        <div className="col border rounded shadow me-3  p-4 bg-white">
+          <h5 className="fw-bold mb-5 fs-4 ">Analytics</h5>
+          <ul className="list-unstyled fs-6">
+            <li className="mb-5 mt-5 ">
+              <strong>Weekly Sales:</strong> $12.4K
+            </li>
+            <li className="mb-5">
+              <strong>Monthly Sales:</strong> $48.3K
+            </li>
+            <li className="mb-5">
+              <strong>Conversion Rate:</strong> 3.2%
+            </li>
+            <li className="mb-5">
+              <strong>New Customers:</strong> 1.2K
+            </li>
+          </ul>
         </div>
-        <div className="col border rounded shadow p-4">
-          <h3>Customers</h3>
-          <div className="row">
-            <div className="col-4">
-              <ul>
-                <li>Name 1</li>
-                <li>Name 2</li>
-                <li>Name 3</li>
-                <li>Name 4</li>
-                <li>Name 5</li>
-              </ul>
+
+        <div className="col border rounded shadow p-4 bg-white">
+          <h5 className="fw-bold mb-4 fs-4">Customers</h5>
+          {orders.map((order, index) => (
+            <div key={index} className="d-flex align-items-center mb-4">
+              <img
+                src={`https://picsum.photos/seed/customer${index}/40/40`}
+                alt="avatar"
+                className="rounded-circle me-3"
+              />
+              <div>
+                <div className="fw-semibold"> {order.name}</div>
+                <div className="text-muted fs-6">
+                  Message: I'd like more info...
+                </div>
+              </div>
             </div>
-            <div className="col-4">
-              <ul>
-                <li>Message1</li>
-                <li>Message2</li>
-                <li>Message3</li>
-                <li>Message4</li>
-                <li>Message5</li>
-              </ul>
-            </div>
-            <div className="col-4">
-              <ul>
-                <li>Id1</li>
-                <li>Id2</li>
-                <li>Id3</li>
-                <li>Id4</li>
-                <li>Id5</li>
-              </ul>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

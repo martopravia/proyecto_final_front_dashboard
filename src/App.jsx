@@ -8,12 +8,14 @@ import ProductsPage from "./components/ProductsPage";
 import CustomersPage from "./components/CustomersPage";
 import Analytics from "./components/Analytics";
 import Settings from "./components/Settings";
+import Login from "./components/Login";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route path="" element={<Login />} />
+        <Route path="/admin" element={<Layout />}>
           <Route path="" element={<Overview />} />
           <Route path="orders" element={<OrdersPage />} />
           <Route path="products" element={<ProductsPage />} />
