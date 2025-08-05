@@ -8,30 +8,51 @@ function Overview() {
       name: "Roberto Díaz",
       status: "Delivered",
       amount: "$540.65",
+      items: [
+        { name: "Nordic Chair", quantity: 2, price: "$120.00" },
+        { name: "Lamp Shade", quantity: 1, price: "$300.65" },
+      ],
     },
     {
       id: "#6583",
       name: "María del Monte",
       status: "Processing",
       amount: "$3260.50",
+      items: [
+        { name: "Cedar Table", quantity: 1, price: "$2600.00" },
+        { name: "Wood Chair", quantity: 2, price: "$330.25" },
+      ],
     },
     {
       id: "#6489",
       name: "Julián Pérez",
       status: "Shipped",
       amount: "$1080.56",
+      items: [
+        { name: "Pine Bookshelf", quantity: 1, price: "$780.56" },
+        { name: "Wooden Lamp", quantity: 2, price: "$150.00" },
+      ],
     },
     {
       id: "#6655",
       name: "Natalia Rodriguez",
       status: "Delivered",
       amount: "$5536.20",
+      items: [
+        { name: "Couch Set", quantity: 1, price: "$4000.00" },
+        { name: "Coffee Table", quantity: 1, price: "$1536.20" },
+      ],
     },
     {
       id: "#6671",
       name: "Mirtha Legrand",
       status: "Processing",
-      amount: "$17800",
+      amount: "$17800.00",
+      items: [
+        { name: "Luxury Sofa", quantity: 1, price: "$10000.00" },
+        { name: "Dining Table", quantity: 1, price: "$5800.00" },
+        { name: "Designer Chair", quantity: 2, price: "$1000.00" },
+      ],
     },
   ];
 
@@ -123,7 +144,7 @@ function Overview() {
                   <tr key={index}>
                     <td>
                       <Link
-                        to={`/admin/orders/${order.id}`}
+                        to={`/admin/orders`}
                         className="text-decoration-none text-primary fw-semibold"
                       >
                         {order.id}

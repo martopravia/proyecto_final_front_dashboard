@@ -54,7 +54,7 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            👥 Customers
+            👥 Customers - hardcoded
           </NavLink>
         </li>
         <hr />
@@ -66,7 +66,7 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            📈 Analytics
+            📈 Analytics - hardcoded
           </NavLink>
         </li>
       </ul>
@@ -80,7 +80,7 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            ⚙️ Settings
+            ⚙️ Settings - hardcoded
           </NavLink>
         </li>
       </ul>
