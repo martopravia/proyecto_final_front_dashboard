@@ -5,10 +5,12 @@ import Layout from "./components/Layout";
 import Overview from "./components/Overview";
 import OrdersPage from "./components/OrdersPage";
 import ProductsPage from "./components/ProductsPage";
-import CustomersPage from "./components/CustomersPage";
-import Analytics from "./components/Analytics";
+
 import Settings from "./components/Settings";
 import Login from "./components/Login";
+
+import CategoriesPage from "./components/CategoriesPage";
+import UserAdminPanel from "./components/userAdminPage";
 
 function App() {
   return (
@@ -19,8 +21,8 @@ function App() {
           <Route path="" element={<Overview />} />
           <Route path="orders" element={<OrdersPage />} />
           <Route path="products" element={<ProductsPage />} />
-          <Route path="customers" element={<CustomersPage />} />
-          <Route path="analytics" element={<Analytics />} />
+          <Route path="customers" element={<CategoriesPage />} />
+          <Route path="analytics" element={<UserAdminPanel />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
