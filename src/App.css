@@ -3,13 +3,15 @@
   margin: 20px;
 }
 
-.side-bar {
-  background-color: #172337;
-}
-
 html,
 body,
 #root {
   height: 100%;
   margin: 0;
+}
+
+#sidebar {
+  background-color: #172337;
+  position: fixed;
+  height: 100vh;
 }
