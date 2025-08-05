@@ -4,8 +4,14 @@ import { NavLink } from "react-router";
 function SideBar() {
   return (
     <div
-      className="d-flex flex-column flex-shrink-0 p-3 side-bar text-white vh-100"
-      style={{ width: "280px" }}
+      className="d-flex flex-column flex-shrink-0 p-3 side-bar text-white"
+      style={{
+        width: "280px",
+        minHeight: "100vh",
+        position: "sticky",
+
+        left: 0,
+      }}
     >
       <span className="fs-4 text-center fw-semibold">STUDIO NÖRA</span>
       <hr />
@@ -54,7 +60,7 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            👥 Customers - hardcoded
+            🎡 Categories
           </NavLink>
         </li>
         <hr />
@@ -66,12 +72,12 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            📈 Analytics - hardcoded
+            📈 Admin Panel
           </NavLink>
         </li>
       </ul>
 
-      <ul className="nav nav-pills flex-column  text-center">
+      <ul className="nav nav-pills flex-column text-center">
         <li className="nav-item">
           <NavLink
             to={"settings"}

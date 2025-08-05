@@ -8,9 +8,20 @@ function OrdersPage() {
       name: "Roberto Díaz",
       status: "Delivered",
       amount: "$540.65",
+
       items: [
-        { name: "Nordic Chair", quantity: 2, price: "$120.00" },
-        { name: "Lamp Shade", quantity: 1, price: "$300.65" },
+        {
+          name: "Nordic Chair",
+          quantity: 2,
+          price: "$120.00",
+          category: "chairs",
+        },
+        {
+          name: "Table NordikÉ",
+          quantity: 1,
+          price: "$300.65",
+          catgeory: "tables",
+        },
       ],
     },
     {
@@ -19,8 +30,18 @@ function OrdersPage() {
       status: "Processing",
       amount: "$3260.50",
       items: [
-        { name: "Cedar Table", quantity: 1, price: "$2600.00" },
-        { name: "Wood Chair", quantity: 2, price: "$330.25" },
+        {
+          name: "Cedar Table",
+          quantity: 1,
+          price: "$2600.00",
+          category: "tables",
+        },
+        {
+          name: "Wood Chair",
+          quantity: 2,
+          price: "$330.25",
+          category: "chairs",
+        },
       ],
     },
     {
@@ -29,8 +50,13 @@ function OrdersPage() {
       status: "Shipped",
       amount: "$1080.56",
       items: [
-        { name: "Pine Bookshelf", quantity: 1, price: "$780.56" },
-        { name: "Wooden Lamp", quantity: 2, price: "$150.00" },
+        { name: "Pine Sofa", quantity: 1, price: "$780.56", category: "sofas" },
+        {
+          name: "Wooden Table",
+          quantity: 2,
+          price: "$150.00",
+          category: "tables",
+        },
       ],
     },
     {
@@ -39,8 +65,13 @@ function OrdersPage() {
       status: "Delivered",
       amount: "$5536.20",
       items: [
-        { name: "Couch Set", quantity: 1, price: "$4000.00" },
-        { name: "Coffee Table", quantity: 1, price: "$1536.20" },
+        { name: "Sofa Set", quantity: 1, price: "$4000.00", category: "sofas" },
+        {
+          name: "Coffee Table",
+          quantity: 1,
+          price: "$1536.20",
+          category: "tables",
+        },
       ],
     },
     {
@@ -49,9 +80,24 @@ function OrdersPage() {
       status: "Processing",
       amount: "$17800.00",
       items: [
-        { name: "Luxury Sofa", quantity: 1, price: "$10000.00" },
-        { name: "Dining Table", quantity: 1, price: "$5800.00" },
-        { name: "Designer Chair", quantity: 2, price: "$1000.00" },
+        {
+          name: "Luxury Sofa",
+          quantity: 1,
+          price: "$10000.00",
+          category: "sofas",
+        },
+        {
+          name: "Dining Table",
+          quantity: 1,
+          price: "$5800.00",
+          category: "tables",
+        },
+        {
+          name: "Designer Chair",
+          quantity: 2,
+          price: "$1000.00",
+          category: "chairs",
+        },
       ],
     },
   ];
@@ -77,9 +123,11 @@ function OrdersPage() {
 
   return (
     <div className="container-fluid">
+      <div className="d-flex justify-content-between align-items-center mt-4 mb-3">
+        <h3 className="fw-bold">Orders</h3>
+      </div>
       <div className="row mt-4 alturaOverview">
         <div className="col border rounded shadow me-3 p-4 ">
-          <h3>Orders</h3>
           <div className="table-responsive">
             <table className="table table-borderless align-middle fs-6">
               <thead>

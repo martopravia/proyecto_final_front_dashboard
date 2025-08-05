@@ -6,3 +6,10 @@
 .side-bar {
   background-color: #172337;
 }
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}

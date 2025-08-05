@@ -5,20 +5,22 @@ function ProductsPage() {
   const [products, setProducts] = useState([
     {
       id: 1,
-      name: "Silla Nórdica",
-      description: "Silla de madera estilo nórdico.",
+      name: "Nordic Chair",
+      description: "lorem ipsum dolor sit amet consectetur adipisicing elit.",
       price: 120,
       stock: 8,
       featured: true,
+      category: "chairs",
       image: "https://picsum.photos/id/4/300/200",
     },
     {
       id: 2,
-      name: "Mesa de Cedro",
-      description: "Mesa grande de comedor en cedro macizo.",
+      name: "Ceder Table",
+      description: "lorem ipsum dolor sit amet consectetur adipisicing elit.",
       price: 950,
       stock: 3,
       featured: false,
+      category: "tables",
       image: "https://picsum.photos/id/9/300/200",
     },
   ]);
@@ -31,6 +33,7 @@ function ProductsPage() {
     price: "",
     stock: "",
     featured: false,
+    category: "",
     image: null,
   });
 
@@ -41,6 +44,7 @@ function ProductsPage() {
       price: "",
       stock: "",
       featured: false,
+      category: "",
       image: null,
     });
     setEditingProductId(null);
@@ -72,6 +76,7 @@ function ProductsPage() {
                 price: parseFloat(newProduct.price),
                 stock: parseInt(newProduct.stock),
                 featured: newProduct.featured,
+                category: newProduct.category,
                 image: newProduct.image || p.image,
               }
             : p
@@ -106,6 +111,7 @@ function ProductsPage() {
       stock: product.stock,
       featured: product.featured,
       image: product.image,
+      category: product.category,
     });
     setShowModal(true);
   };
@@ -130,50 +136,56 @@ function ProductsPage() {
         </Button>
       </div>
 
-      <div className="row">
-        {products.map((product) => (
-          <div className="col-md-4 mb-4" key={product.id}>
-            <div className="border rounded shadow-sm p-3 h-100 d-flex flex-column">
-              <img
-                src={
-                  product.image instanceof File
-                    ? URL.createObjectURL(product.image)
-                    : product.image || "https://via.placeholder.com/300x200"
-                }
-                alt={product.name}
-                className="img-fluid rounded mb-3"
-                style={{ objectFit: "contain", height: "200px" }}
-              />
-              <h5 className="fw-bold mb-1">
-                {product.name}{" "}
-                {product.featured && <span title="Featured">⭐</span>}
-              </h5>
-              <p className="text-muted small mb-2">{product.description}</p>
-              <div className="mt-auto">
-                <div className="mb-2">
-                  <strong>Price:</strong> ${product.price.toFixed(2)} <br />
-                  <strong>Stock:</strong> {product.stock}
-                </div>
-                <div className="d-flex justify-content-between">
-                  <Button
-                    size="sm"
-                    variant="outline-primary"
-                    onClick={() => handleEdit(product)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline-danger"
-                    onClick={() => handleDelete(product.id)}
-                  >
-                    Delete
-                  </Button>
+      <div className="row mt-4 alturaOverview">
+        <div className="col border rounded shadow me-3 p-4">
+          <div className="row">
+            {products.map((product) => (
+              <div className="col-md-4 mb-4" key={product.id}>
+                <div className="border rounded shadow-sm p-3 h-100 d-flex flex-column">
+                  <img
+                    src={
+                      product.image instanceof File
+                        ? URL.createObjectURL(product.image)
+                        : product.image || "https://via.placeholder.com/300x200"
+                    }
+                    alt={product.name}
+                    className="img-fluid rounded mb-3"
+                    style={{ objectFit: "contain", height: "200px" }}
+                  />
+                  <h5 className="fw-bold mb-1">
+                    {product.name}{" "}
+                    {product.featured && <span title="Featured">⭐</span>}
+                  </h5>
+                  <p className="text-muted small mb-2">{product.description}</p>
+                  <div className="mt-auto">
+                    <div className="mb-2">
+                      <strong>Price:</strong> ${product.price.toFixed(2)} <br />
+                      <strong>Stock:</strong> {product.stock}
+                      <br />
+                      <strong>Category:</strong> {product.category}
+                    </div>
+                    <div className="d-flex justify-content-between">
+                      <Button
+                        size="sm"
+                        variant="outline-primary"
+                        onClick={() => handleEdit(product)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline-danger"
+                        onClick={() => handleDelete(product.id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
 
       <Modal show={showModal} onHide={handleModalClose} centered>
@@ -225,6 +237,20 @@ function ProductsPage() {
                 required
               />
             </Form.Group>
+            <Form.Group className="mb-2">
+              <Form.Label>Category</Form.Label>
+              <Form.Select
+                name="category"
+                value={newProduct.category}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select category</option>
+                <option value="chairs">Chairs</option>
+                <option value="tables">Tables</option>
+                <option value="sofas">Sofas</option>
+              </Form.Select>
+            </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Upload Image</Form.Label>
               <Form.Control
@@ -234,7 +260,6 @@ function ProductsPage() {
                 onChange={handleChange}
                 required={!editingProductId}
               />
-
               {newProduct.image && (
                 <img
                   src={
