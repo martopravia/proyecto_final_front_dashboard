@@ -32,8 +32,8 @@ function App() {
           <Route path="orders" element={<OrdersPage />} />
           <Route path="products" element={<ProductsPage />} />
           <Route path="categories" element={<CategoriesPage />} />
-          <Route path="analytics" element={<UserAdminPanel />} />
-          <Route path="adminPanel" element={<Settings />} />
+          <Route path="adminPanel" element={<UserAdminPanel />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
       <ToastContainer
