@@ -26,7 +26,7 @@ export const useApi = () => {
         },
       });
       dispatch(login({ user, token }));
-      console.log("User logged in:", user, "to token:", token);
+      // console.log("User logged in:", user, "to token:", token);
 
       return { token, user };
     } catch (error) {
