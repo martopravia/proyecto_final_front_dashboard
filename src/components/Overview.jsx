@@ -1,60 +1,10 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router";
 
 function Overview() {
-  const orders = [
-    {
-      id: "#6657",
-      name: "Roberto Díaz",
-      status: "Delivered",
-      amount: "$540.65",
-      items: [
-        { name: "Nordic Chair", quantity: 2, price: "$120.00" },
-        { name: "Lamp Shade", quantity: 1, price: "$300.65" },
-      ],
-    },
-    {
-      id: "#6583",
-      name: "María del Monte",
-      status: "Processing",
-      amount: "$3260.50",
-      items: [
-        { name: "Cedar Table", quantity: 1, price: "$2600.00" },
-        { name: "Wood Chair", quantity: 2, price: "$330.25" },
-      ],
-    },
-    {
-      id: "#6489",
-      name: "Julián Pérez",
-      status: "Shipped",
-      amount: "$1080.56",
-      items: [
-        { name: "Pine Bookshelf", quantity: 1, price: "$780.56" },
-        { name: "Wooden Lamp", quantity: 2, price: "$150.00" },
-      ],
-    },
-    {
-      id: "#6655",
-      name: "Natalia Rodriguez",
-      status: "Delivered",
-      amount: "$5536.20",
-      items: [
-        { name: "Couch Set", quantity: 1, price: "$4000.00" },
-        { name: "Coffee Table", quantity: 1, price: "$1536.20" },
-      ],
-    },
-    {
-      id: "#6671",
-      name: "Mirtha Legrand",
-      status: "Processing",
-      amount: "$17800.00",
-      items: [
-        { name: "Luxury Sofa", quantity: 1, price: "$10000.00" },
-        { name: "Dining Table", quantity: 1, price: "$5800.00" },
-        { name: "Designer Chair", quantity: 2, price: "$1000.00" },
-      ],
-    },
-  ];
+  const orders = useSelector((state) => state.order.orders);
+  const last8Orders = [...orders].sort((a, b) => b.id - a.id).slice(0, 7);
 
   const topSelling = [
     {
@@ -76,17 +26,17 @@ function Overview() {
   const getStatusStyle = (status) => {
     const base = "px-3 py-1 rounded-full text-sm font-medium";
     switch (status) {
-      case "Delivered":
+      case "completed":
         return `${base} bg-success bg-opacity-25 text-success`;
-      case "Processing":
+      case "pending":
         return `${base} bg-warning bg-opacity-25 text-warning`;
-      case "Shipped":
-        return `${base} bg-primary bg-opacity-25 text-primary`;
+      case "cancelled":
+        return `${base} bg-danger bg-opacity-25 text-danger`;
       default:
         return `${base} bg-secondary bg-opacity-25 text-secondary`;
     }
   };
-
+  console.log("Órdenes desde Redux:", orders);
   return (
     <div className="container-fluid">
       <div className="row alturaOverview">
@@ -140,14 +90,14 @@ function Overview() {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order, index) => (
-                  <tr key={index}>
+                {last8Orders.map((order, index) => (
+                  <tr key={order.id}>
                     <td>
                       <Link
-                        to={`/admin/orders`}
+                        to={`/admin/orders?order=${order.id}`}
                         className="text-decoration-none text-primary fw-semibold"
                       >
-                        {order.id}
+                        #{order.id}
                       </Link>
                     </td>
                     <td className="d-flex align-items-center mb-2">
@@ -161,14 +111,15 @@ function Overview() {
                           objectFit: "cover",
                         }}
                       />
-                      {order.name}
+                      {order.user?.firstname || "No nombre"}{" "}
+                      {order.user?.lastname || ""}
                     </td>
                     <td>
                       <span className={getStatusStyle(order.status)}>
                         {order.status}
                       </span>
                     </td>
-                    <td>{order.amount}</td>
+                    <td>${order.totalAmount}</td>
                   </tr>
                 ))}
               </tbody>
@@ -196,7 +147,7 @@ function Overview() {
 
         <div className="col border rounded shadow p-4 bg-white">
           <h5 className="fw-bold mb-4 fs-4">Customers</h5>
-          {orders.map((order, index) => (
+          {last8Orders.map((order, index) => (
             <div key={index} className="d-flex align-items-center mb-4">
               <img
                 src={`https://picsum.photos/seed/customer${index}/40/40`}
@@ -204,9 +155,12 @@ function Overview() {
                 className="rounded-circle me-3"
               />
               <div>
-                <div className="fw-semibold"> {order.name}</div>
+                <div className="fw-semibold">
+                  {order.user?.firstname || "No nombre"}{" "}
+                  {order.user?.lastname || ""}
+                </div>
                 <div className="text-muted fs-6">
-                  Message: I'd like more info...
+                  Email: {order.user?.email || "No email"}
                 </div>
               </div>
             </div>

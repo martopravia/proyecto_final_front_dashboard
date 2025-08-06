@@ -1,125 +1,59 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setOrders } from "../redux/orderSlice";
 
 function OrdersPage() {
-  const orders = [
-    {
-      id: "#6657",
-      name: "Roberto Díaz",
-      status: "Delivered",
-      amount: "$540.65",
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.user.token);
+  const orders = useSelector((state) => state.order.orders);
+  const dispatch = useDispatch();
 
-      items: [
-        {
-          name: "Nordic Chair",
-          quantity: 2,
-          price: "$120.00",
-          category: "chairs",
-        },
-        {
-          name: "Table NordikÉ",
-          quantity: 1,
-          price: "$300.65",
-          catgeory: "tables",
-        },
-      ],
-    },
-    {
-      id: "#6583",
-      name: "María del Monte",
-      status: "Processing",
-      amount: "$3260.50",
-      items: [
-        {
-          name: "Cedar Table",
-          quantity: 1,
-          price: "$2600.00",
-          category: "tables",
-        },
-        {
-          name: "Wood Chair",
-          quantity: 2,
-          price: "$330.25",
-          category: "chairs",
-        },
-      ],
-    },
-    {
-      id: "#6489",
-      name: "Julián Pérez",
-      status: "Shipped",
-      amount: "$1080.56",
-      items: [
-        { name: "Pine Sofa", quantity: 1, price: "$780.56", category: "sofas" },
-        {
-          name: "Wooden Table",
-          quantity: 2,
-          price: "$150.00",
-          category: "tables",
-        },
-      ],
-    },
-    {
-      id: "#6655",
-      name: "Natalia Rodriguez",
-      status: "Delivered",
-      amount: "$5536.20",
-      items: [
-        { name: "Sofa Set", quantity: 1, price: "$4000.00", category: "sofas" },
-        {
-          name: "Coffee Table",
-          quantity: 1,
-          price: "$1536.20",
-          category: "tables",
-        },
-      ],
-    },
-    {
-      id: "#6671",
-      name: "Mirtha Legrand",
-      status: "Processing",
-      amount: "$17800.00",
-      items: [
-        {
-          name: "Luxury Sofa",
-          quantity: 1,
-          price: "$10000.00",
-          category: "sofas",
-        },
-        {
-          name: "Dining Table",
-          quantity: 1,
-          price: "$5800.00",
-          category: "tables",
-        },
-        {
-          name: "Designer Chair",
-          quantity: 2,
-          price: "$1000.00",
-          category: "chairs",
-        },
-      ],
-    },
-  ];
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/orders`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        dispatch(setOrders(response.data));
+        console.log("Fetched orders:", response.data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+
+    if (token) {
+      fetchOrders();
+    } else {
+      console.warn("No token available, user not authenticated.");
+    }
+  }, [token]);
+
+  const orderId = searchParams.get("order");
+  const selectedOrder = orders.find((order) => order.id.toString() === orderId);
+
   const getStatusStyle = (status) => {
     const base = "px-3 py-1 rounded-full text-sm font-medium";
     switch (status) {
-      case "Delivered":
+      case "completed":
         return `${base} bg-success bg-opacity-25 text-success`;
-      case "Processing":
+      case "pending":
         return `${base} bg-warning bg-opacity-25 text-warning`;
-      case "Shipped":
-        return `${base} bg-primary bg-opacity-25 text-primary`;
+      case "cancelled":
+        return `${base} bg-danger bg-opacity-25 text-danger`;
       default:
         return `${base} bg-secondary bg-opacity-25 text-secondary`;
     }
   };
-  const [searchParams] = useSearchParams();
-  const orderId = searchParams.get("order");
-  const navigate = useNavigate();
-  const selectedOrder = orders.find(
-    (order) => order.id.replace("#", "") === orderId
-  );
 
   return (
     <div className="container-fluid">
@@ -127,7 +61,7 @@ function OrdersPage() {
         <h3 className="fw-bold">Orders</h3>
       </div>
       <div className="row mt-4 alturaOverview">
-        <div className="col border rounded shadow me-3 p-4 ">
+        <div className="col border rounded shadow me-3 p-4">
           <div className="table-responsive">
             <table className="table table-borderless align-middle fs-6">
               <thead>
@@ -140,25 +74,15 @@ function OrdersPage() {
               </thead>
               <tbody>
                 {orders.map((order, index) => (
-                  <tr
-                    key={index}
-                    className={order.id.replace("#", "") === orderId}
-                  >
+                  <tr key={order.id}>
                     <td>
                       <button
                         onClick={() =>
-                          navigate(
-                            `/admin/orders?order=${order.id.replace("#", "")}`
-                          )
+                          navigate(`/admin/orders?order=${order.id}`)
                         }
                         className="btn btn-link p-0 text-decoration-none fw-semibold text-primary"
-                        style={{
-                          userSelect: "none",
-                          outline: "none",
-                          boxShadow: "none",
-                        }}
                       >
-                        {order.id}
+                        #{order.id}
                       </button>
                     </td>
                     <td className="d-flex align-items-center mb-2">
@@ -172,14 +96,15 @@ function OrdersPage() {
                           objectFit: "cover",
                         }}
                       />
-                      {order.name}
+                      {order.user?.firstname || "No firstname registered"}{" "}
+                      {order.user?.lastname || "No lastname registered"}
                     </td>
                     <td>
                       <span className={getStatusStyle(order.status)}>
                         {order.status}
                       </span>
                     </td>
-                    <td>{order.amount}</td>
+                    <td>${order.totalAmount}</td>
                   </tr>
                 ))}
               </tbody>
@@ -192,11 +117,13 @@ function OrdersPage() {
             <>
               <h4 className="fw-bold mb-3">Order Summary</h4>
               <div className="mb-2">
-                <strong>Order ID:</strong> {selectedOrder.id}
+                <strong>Order ID:</strong> #{selectedOrder.id}
               </div>
               <div className="mb-2">
-                <strong>Customer:</strong> {selectedOrder.name}
+                <strong>Customer:</strong> {selectedOrder.user?.firstname}{" "}
+                {selectedOrder.user?.lastname} ({selectedOrder.user?.email})
               </div>
+
               <div className="mb-2">
                 <strong>Status:</strong>{" "}
                 <span className={getStatusStyle(selectedOrder.status)}>
@@ -204,7 +131,7 @@ function OrdersPage() {
                 </span>
               </div>
               <div className="mb-3">
-                <strong>Total Amount:</strong> {selectedOrder.amount}
+                <strong>Total Amount:</strong> ${selectedOrder.totalAmount}
               </div>
               <hr />
               <h5 className="fw-bold mb-3">Items</h5>
@@ -217,11 +144,11 @@ function OrdersPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {selectedOrder.items.map((item, idx) => (
+                  {selectedOrder.orderDetails.map((item, idx) => (
                     <tr key={idx}>
                       <td>{item.name}</td>
                       <td className="text-center">{item.quantity}</td>
-                      <td className="text-end">{item.price}</td>
+                      <td className="text-end">${item.unitPrice}</td>
                     </tr>
                   ))}
                 </tbody>
