@@ -1,7 +1,18 @@
 import React from "react";
 import { NavLink } from "react-router";
+import { toast } from "react-toastify";
+import { logout } from "../redux/userSlice";
+import { useDispatch } from "react-redux";
 
 function SideBar() {
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    setTimeout(() => {
+      toast.info("You´ve been logged out");
+      dispatch(logout());
+    }, 1000);
+  };
+
   return (
     <div
       id="sidebar"
@@ -51,7 +62,7 @@ function SideBar() {
         <hr />
         <li>
           <NavLink
-            to={"customers"}
+            to={"categories"}
             style={{ color: "white", textDecoration: "none" }}
             className={({ isActive }) =>
               isActive ? "nav-link active" : "nav-link"
@@ -63,7 +74,7 @@ function SideBar() {
         <hr />
         <li>
           <NavLink
-            to={"analytics"}
+            to={"adminPanel"}
             style={{ color: "white", textDecoration: "none" }}
             className={({ isActive }) =>
               isActive ? "nav-link active" : "nav-link"
@@ -88,7 +99,9 @@ function SideBar() {
         </li>
       </ul>
       <hr />
-      <button className="btn btn-outline-light mt-3">Log out</button>
+      <button className="btn btn-outline-light mt-3" onClick={handleLogout}>
+        Log out
+      </button>
     </div>
   );
 }
