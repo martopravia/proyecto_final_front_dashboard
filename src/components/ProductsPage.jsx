@@ -11,7 +11,8 @@ function ProductsPage() {
       stock: 8,
       featured: true,
       category: "chairs",
-      image: "https://picsum.photos/id/4/300/200",
+      image:
+        "https://ubmbvouzxyajisbnmzeu.supabase.co/storage/v1/object/public/products/chair_wood_cedar_smoked_lanson.webp",
     },
     {
       id: 2,
@@ -21,7 +22,8 @@ function ProductsPage() {
       stock: 3,
       featured: false,
       category: "tables",
-      image: "https://picsum.photos/id/9/300/200",
+      image:
+        "https://ubmbvouzxyajisbnmzeu.supabase.co/storage/v1/object/public/products/table_round_wood_cherry_black_iron_varden.webp",
     },
   ]);
 
@@ -122,22 +124,21 @@ function ProductsPage() {
   };
 
   return (
-    <div className="container-fluid">
-      <div className="d-flex justify-content-between align-items-center mt-4 mb-3">
-        <h3 className="fw-bold">Products</h3>
-        <Button
-          variant="primary"
-          onClick={() => {
-            resetModal();
-            setShowModal(true);
-          }}
-        >
-          Add Product
-        </Button>
-      </div>
-
-      <div className="row mt-4 alturaOverview">
-        <div className="col border rounded shadow me-3 p-4">
+    <div className="container">
+      <div className="row mt-4 d-flex gap-3">
+        <div className="col-12 d-flex justify-content-between align-items-center p-0">
+          <h3 className="fw-bold">Products</h3>
+          <Button
+            variant="primary"
+            onClick={() => {
+              resetModal();
+              setShowModal(true);
+            }}
+          >
+            Add Product
+          </Button>
+        </div>
+        <div className="col border rounded shadow p-4">
           <div className="row">
             {products.map((product) => (
               <div className="col-md-4 mb-4" key={product.id}>

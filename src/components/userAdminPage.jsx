@@ -128,15 +128,15 @@ function UserAdminPanel() {
   );
 
   return (
-    <div className="container-fluid">
+    <div className="container">
       <ToastContainer position="top-right" autoClose={3000} />
 
       <div className="d-flex justify-content-between align-items-center mt-4 mb-3">
         <h3 className="fw-bold">Admin Panel</h3>
       </div>
 
-      <div className="row alturaOverview">
-        <div className="col border rounded shadow p-4 bg-white me-3">
+      <div className="row d-flex gap-3">
+        <div className="col border rounded shadow p-4 bg-white">
           <h5 className="fw-bold mb-4 fs-4">Add User</h5>
 
           <div className="mb-3">
@@ -286,7 +286,7 @@ function UserAdminPanel() {
           </div>
         </div>
 
-        <div className="mt-4 border rounded shadow p-4 bg-white">
+        <div className="border rounded shadow p-4 bg-white">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h5 className="fw-bold fs-4">Registered Users</h5>
             <input

@@ -48,16 +48,15 @@ function CategoriesPage() {
   };
 
   return (
-    <div className="container-fluid">
-      <div className="d-flex justify-content-between align-items-center mt-4 mb-3">
-        <h3 className="fw-bold">Categories</h3>
-        <Button variant="primary" onClick={handleOpenAddModal}>
-          Add Category
-        </Button>
-      </div>
-
-      <div className="row mt-4 alturaOverview">
-        <div className="col border rounded shadow me-3 p-4 bg-white">
+    <div className="container">
+      <div className="row mt-4 d-flex gap-3">
+        <div className="col-12 d-flex justify-content-between align-items-center p-0">
+          <h3 className="fw-bold">Categories</h3>
+          <Button variant="primary" onClick={handleOpenAddModal}>
+            Add Category
+          </Button>
+        </div>
+        <div className="col border rounded shadow p-4 bg-white">
           <div className="row">
             {categories.map((category) => (
               <div className="col-md-6 mb-3" key={category.id}>

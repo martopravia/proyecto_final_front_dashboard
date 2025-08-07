@@ -89,8 +89,8 @@ function Overview() {
 
   return (
     <div className="container-fluid">
-      <div className="row alturaOverview">
-        <div className="col me-3 border rounded shadow p-4 bg-white">
+      <div className="row">
+        <div className="col border rounded shadow p-4 bg-white">
           <h5 className="fw-bold mb-4 fs-4">Today's Sales</h5>
           <img
             src="src/img/fotoGrafifca.png"
@@ -126,7 +126,7 @@ function Overview() {
         </div>
       </div>
 
-      <div className="row mt-4 alturaOverview">
+      <div className="row mt-4">
         <div className="col border rounded shadow me-3 p-4 bg-white">
           <h5 className="fw-bold mb-4 fs-4">Orders</h5>
           <div className="table-responsive">

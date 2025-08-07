@@ -56,12 +56,12 @@ function OrdersPage() {
   };
 
   return (
-    <div className="container-fluid">
-      <div className="d-flex justify-content-between align-items-center mt-4 mb-3">
-        <h3 className="fw-bold">Orders</h3>
-      </div>
-      <div className="row mt-4 alturaOverview">
-        <div className="col border rounded shadow me-3 p-4">
+    <div className="container">
+      <div className="row mt-4 d-flex gap-3">
+        <div className="col-12 d-flex justify-content-between align-items-center p-0">
+          <h3 className="fw-bold">Orders</h3>
+        </div>
+        <div className="col border rounded shadow p-4">
           <div className="table-responsive">
             <table className="table table-borderless align-middle fs-6">
               <thead>

@@ -38,9 +38,9 @@ function Overview() {
   };
   console.log("Órdenes desde Redux:", orders);
   return (
-    <div className="container-fluid">
-      <div className="row alturaOverview">
-        <div className="col me-3 border rounded shadow p-4 bg-white">
+    <div className="container mt-4">
+      <div className="row d-flex gap-3">
+        <div className="col border rounded shadow p-4 bg-white">
           <h5 className="fw-bold mb-4 fs-4">Today's Sales</h5>
           <img
             src="src/img/fotoGrafifca.png"
@@ -76,8 +76,8 @@ function Overview() {
         </div>
       </div>
 
-      <div className="row mt-4 alturaOverview">
-        <div className="col border rounded shadow me-3 p-4 bg-white">
+      <div className="row my-4 d-flex gap-3">
+        <div className="col border rounded shadow p-4 bg-white">
           <h5 className="fw-bold mb-4 fs-4">Orders</h5>
           <div className="table-responsive">
             <table className="table table-borderless align-middle fs-6">
@@ -127,7 +127,7 @@ function Overview() {
           </div>
         </div>
 
-        <div className="col border rounded shadow me-3  p-4 bg-white">
+        <div className="col border rounded shadow p-4 bg-white">
           <h5 className="fw-bold mb-5 fs-4 ">Analytics</h5>
           <ul className="list-unstyled fs-6">
             <li className="mb-5 mt-5 ">

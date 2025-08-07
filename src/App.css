@@ -1,10 +1,7 @@
-.alturaOverview {
-  height: 46vh;
-  margin: 20px;
+html {
+  overflow-y: scroll;
 }
 
-html,
-body,
 #root {
   height: 100%;
   margin: 0;
