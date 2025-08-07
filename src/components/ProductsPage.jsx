@@ -8,22 +8,33 @@ function ProductsPage() {
   const products = useSelector((state) => state.products.items);
   const token = useSelector((state) => state.user.token);
 
-  console.log(products);
+  // console.log(products);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const result = products.map((product) => ({
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/products`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await response.json();
+
+        const formatted = data.map((product) => ({
           ...product,
-          category: product.category?.name,
+          category: product.category?.name || "Uncategorized",
         }));
-        dispatch(setProducts(result));
+
+        dispatch(setProducts(formatted));
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
 
     fetchProducts();
-  }, [dispatch]);
+  }, [dispatch, token]);
 
   const [showModal, setShowModal] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
