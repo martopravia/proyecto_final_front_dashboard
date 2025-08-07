@@ -73,40 +73,43 @@ function OrdersPage() {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order, index) => (
-                  <tr key={order.id}>
-                    <td>
-                      <button
-                        onClick={() =>
-                          navigate(`/admin/orders?order=${order.id}`)
-                        }
-                        className="btn btn-link p-0 text-decoration-none fw-semibold text-primary"
-                      >
-                        #{order.id}
-                      </button>
-                    </td>
-                    <td className="d-flex align-items-center mb-2">
-                      <img
-                        src={`https://picsum.photos/seed/customer${index}/40/40`}
-                        alt="avatar"
-                        className="rounded-circle me-2"
-                        style={{
-                          width: "30px",
-                          height: "30px",
-                          objectFit: "cover",
-                        }}
-                      />
-                      {order.user?.firstname || "No firstname registered"}{" "}
-                      {order.user?.lastname || "No lastname registered"}
-                    </td>
-                    <td>
-                      <span className={getStatusStyle(order.status)}>
-                        {order.status}
-                      </span>
-                    </td>
-                    <td>${order.totalAmount}</td>
-                  </tr>
-                ))}
+                {[...orders]
+                  .sort((a, b) => b.id - a.id)
+
+                  .map((order, index) => (
+                    <tr key={order.id}>
+                      <td>
+                        <button
+                          onClick={() =>
+                            navigate(`/admin/orders?order=${order.id}`)
+                          }
+                          className="btn btn-link p-0 text-decoration-none fw-semibold text-primary"
+                        >
+                          #{order.id}
+                        </button>
+                      </td>
+                      <td className="d-flex align-items-center mb-2">
+                        <img
+                          src={`https://picsum.photos/seed/customer${index}/40/40`}
+                          alt="avatar"
+                          className="rounded-circle me-2"
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            objectFit: "cover",
+                          }}
+                        />
+                        {order.user?.firstname || "No firstname registered"}{" "}
+                        {order.user?.lastname || "No lastname registered"}
+                      </td>
+                      <td>
+                        <span className={getStatusStyle(order.status)}>
+                          {order.status}
+                        </span>
+                      </td>
+                      <td>${order.totalAmount}</td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
