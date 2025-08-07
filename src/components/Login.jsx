@@ -54,7 +54,7 @@ const Login = () => {
                   id="password"
                   name="password"
                   className="form-control mb-2"
-                  placeholder="admin123"
+                  placeholder="admin"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
