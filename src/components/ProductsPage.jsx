@@ -2,39 +2,30 @@ import { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { setProducts } from "../redux/productSlice";
+import { useApi } from "../hooks/useApi";
+import axios from "axios";
 
 function ProductsPage() {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.items);
   const token = useSelector((state) => state.user.token);
+  const { getProducts } = useApi();
 
-  // console.log(products);
+  console.log(products);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/products`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/products`
         );
-        const data = await response.json();
-
-        const formatted = data.map((product) => ({
-          ...product,
-          category: product.category?.name || "Uncategorized",
-        }));
-
-        dispatch(setProducts(formatted));
+        dispatch(setProducts(response.data));
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
 
     fetchProducts();
-  }, [dispatch, token]);
+  }, [dispatch]);
 
   const [showModal, setShowModal] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
@@ -137,7 +128,7 @@ function ProductsPage() {
   }
 
   return (
-    <div className="container">
+    <div className="mx-5" style={{ width: "80%" }}>
       <div className="row mt-4 d-flex gap-3">
         <div className="col-12 d-flex justify-content-between align-items-center p-0">
           <h3 className="fw-bold">Products</h3>
@@ -176,7 +167,8 @@ function ProductsPage() {
                       {Number(product.price).toFixed(2)} <br />
                       <strong>Stock:</strong> {product.stock}
                       <br />
-                      <strong>Category:</strong> {product.category}
+                      <strong>Category:</strong>{" "}
+                      {product.category?.name || "Sin categoría"}
                     </div>
                     <div className="d-flex justify-content-between">
                       <Button
