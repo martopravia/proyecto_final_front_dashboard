@@ -17,9 +17,6 @@ function SideBar() {
     <div
       id="sidebar"
       className="d-flex flex-column flex-shrink-0 p-3 text-white"
-      style={{
-        width: "280px",
-      }}
     >
       <span className="fs-4 text-center fw-semibold">STUDIO NÖRA</span>
       <hr />

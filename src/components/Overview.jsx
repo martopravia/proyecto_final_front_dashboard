@@ -71,7 +71,7 @@ function Overview() {
   };
   console.log("Órdenes desde Redux:", orders);
   return (
-    <div className="container mt-4">
+    <div className="mt-4 mx-4" style={{ width: "100%" }}>
       <div className="row d-flex gap-3">
         <div className="col border rounded shadow p-4 bg-white">
           <h5 className="fw-bold mb-4 fs-4">Today's Sales</h5>

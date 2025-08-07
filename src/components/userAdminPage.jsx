@@ -128,7 +128,7 @@ function UserAdminPanel() {
   );
 
   return (
-    <div className="container">
+    <div className="mx-4" style={{ width: "100%" }}>
       <ToastContainer position="top-right" autoClose={3000} />
 
       <div className="d-flex justify-content-between align-items-center mt-4 mb-3">
