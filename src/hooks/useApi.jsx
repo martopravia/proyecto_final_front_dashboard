@@ -47,15 +47,15 @@ export const useApi = () => {
   //     }
   //   };
 
-  //   const getProducts = async (params) => {
-  //     try {
-  //       const response = await api.get("/products", { params });
-  //       dispatch(setProducts(response.data));
-  //       return response.data;
-  //     } catch (error) {
-  //       console.error("Error:", error);
-  //     }
-  //   };
+  const getProducts = async (params) => {
+    try {
+      const response = await api.get("/products", { params });
+      dispatch(setProducts(response.data));
+      return response.data;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return {
     loginUser,

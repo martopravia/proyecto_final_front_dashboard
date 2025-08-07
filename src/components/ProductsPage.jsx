@@ -2,21 +2,23 @@ import { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { setProducts } from "../redux/productSlice";
+import { useApi } from "../hooks/useApi";
+import axios from "axios";
 
 function ProductsPage() {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.items);
   const token = useSelector((state) => state.user.token);
+  const { getProducts } = useApi();
 
   console.log(products);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const result = products.map((product) => ({
-          ...product,
-          category: product.category?.name,
-        }));
-        dispatch(setProducts(result));
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/products`
+        );
+        dispatch(setProducts(response.data));
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -126,7 +128,11 @@ function ProductsPage() {
   }
 
   return (
+<<<<<<< HEAD
     <div className="mx-4" style={{ width: "100%" }}>
+=======
+    <div className="mx-5" style={{ width: "80%" }}>
+>>>>>>> 5877e01cfd998f639b59325e752338cdfd770b62
       <div className="row mt-4 d-flex gap-3">
         <div className="col-12 d-flex justify-content-between align-items-center p-0">
           <h3 className="fw-bold">Products</h3>
@@ -165,7 +171,8 @@ function ProductsPage() {
                       {Number(product.price).toFixed(2)} <br />
                       <strong>Stock:</strong> {product.stock}
                       <br />
-                      <strong>Category:</strong> {product.category}
+                      <strong>Category:</strong>{" "}
+                      {product.category?.name || "Sin categoría"}
                     </div>
                     <div className="d-flex justify-content-between">
                       <Button
