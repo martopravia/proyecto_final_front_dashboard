@@ -1,31 +1,29 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { setProducts } from "../redux/productSlice";
 
 function ProductsPage() {
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: "Nordic Chair",
-      description: "lorem ipsum dolor sit amet consectetur adipisicing elit.",
-      price: 120,
-      stock: 8,
-      featured: true,
-      category: "chairs",
-      image:
-        "https://ubmbvouzxyajisbnmzeu.supabase.co/storage/v1/object/public/products/chair_wood_cedar_smoked_lanson.webp",
-    },
-    {
-      id: 2,
-      name: "Ceder Table",
-      description: "lorem ipsum dolor sit amet consectetur adipisicing elit.",
-      price: 950,
-      stock: 3,
-      featured: false,
-      category: "tables",
-      image:
-        "https://ubmbvouzxyajisbnmzeu.supabase.co/storage/v1/object/public/products/table_round_wood_cherry_black_iron_varden.webp",
-    },
-  ]);
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.products.items);
+  const token = useSelector((state) => state.user.token);
+
+  console.log(products);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const result = products.map((product) => ({
+          ...product,
+          category: product.category?.name,
+        }));
+        dispatch(setProducts(result));
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [dispatch]);
 
   const [showModal, setShowModal] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
@@ -66,42 +64,41 @@ function ProductsPage() {
 
   const handleAddOrUpdateProduct = (e) => {
     e.preventDefault();
-
     if (editingProductId) {
-      setProducts((prev) =>
-        prev.map((p) =>
-          p.id === editingProductId
-            ? {
-                ...p,
-                name: newProduct.name,
-                description: newProduct.description,
-                price: parseFloat(newProduct.price),
-                stock: parseInt(newProduct.stock),
-                featured: newProduct.featured,
-                category: newProduct.category,
-                image: newProduct.image || p.image,
-              }
-            : p
-        )
+      const updatedProducts = products.map((p) =>
+        p.id === editingProductId
+          ? {
+              ...p,
+              ...newProduct,
+              price: Number(newProduct.price),
+              stock: Number(newProduct.stock),
+            }
+          : p
       );
+      dispatch(setProducts(updatedProducts));
     } else {
-      setProducts((prev) => [
-        ...prev,
-        {
-          ...newProduct,
-          id: Date.now(),
-          price: parseFloat(newProduct.price),
-          stock: parseInt(newProduct.stock),
-        },
-      ]);
+      const newId =
+        products.length > 0 ? Math.max(...products.map((p) => p.id)) + 1 : 1;
+      const newProd = {
+        id: newId,
+        ...newProduct,
+        price: Number(newProduct.price),
+        stock: Number(newProduct.stock),
+        category: newProduct.category || "Uncategorized",
+        image:
+          newProduct.image instanceof File
+            ? URL.createObjectURL(newProduct.image)
+            : newProduct.image,
+      };
+      dispatch(setProducts([...products, newProd]));
     }
-
     resetModal();
     setShowModal(false);
   };
 
   const handleDelete = (id) => {
-    setProducts(products.filter((p) => p.id !== id));
+    const filtered = products.filter((p) => p.id !== id);
+    dispatch(setProducts(filtered));
   };
 
   const handleEdit = (product) => {
@@ -112,7 +109,7 @@ function ProductsPage() {
       price: product.price,
       stock: product.stock,
       featured: product.featured,
-      image: product.image,
+      image: null,
       category: product.category,
     });
     setShowModal(true);
@@ -122,6 +119,11 @@ function ProductsPage() {
     resetModal();
     setShowModal(false);
   };
+
+  function capitalizeFirstLetter(string) {
+    if (!string) return "";
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  }
 
   return (
     <div className="container">
@@ -145,22 +147,22 @@ function ProductsPage() {
                 <div className="border rounded shadow-sm p-3 h-100 d-flex flex-column">
                   <img
                     src={
-                      product.image instanceof File
-                        ? URL.createObjectURL(product.image)
-                        : product.image || "https://via.placeholder.com/300x200"
+                      product.image ||
+                      "https://via.placeholder.com/300x200?text=No+Image"
                     }
                     alt={product.name}
                     className="img-fluid rounded mb-3"
                     style={{ objectFit: "contain", height: "200px" }}
                   />
                   <h5 className="fw-bold mb-1">
-                    {product.name}{" "}
+                    {capitalizeFirstLetter(product.name)}{" "}
                     {product.featured && <span title="Featured">⭐</span>}
                   </h5>
                   <p className="text-muted small mb-2">{product.description}</p>
                   <div className="mt-auto">
                     <div className="mb-2">
-                      <strong>Price:</strong> ${product.price.toFixed(2)} <br />
+                      <strong>Price:</strong> $
+                      {Number(product.price).toFixed(2)} <br />
                       <strong>Stock:</strong> {product.stock}
                       <br />
                       <strong>Category:</strong> {product.category}
