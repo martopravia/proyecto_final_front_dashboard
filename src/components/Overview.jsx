@@ -1,10 +1,43 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+// import { useSelector } from "react-redux";
 import { Link } from "react-router";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setOrders } from "../redux/orderSlice";
+import axios from "axios";
 
 function Overview() {
+  const token = useSelector((state) => state.user.token);
   const orders = useSelector((state) => state.order.orders);
-  const last8Orders = [...orders].sort((a, b) => b.id - a.id).slice(0, 7);
+  const dispatch = useDispatch();
+  // const orders = useSelector((state) => state.order.orders);
+  // const last8Orders = [...orders].sort((a, b) => b.id - a.id).slice(0, 7);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/orders`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        dispatch(setOrders(response.data));
+        console.log("Fetched orders:", response.data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+
+    if (token) {
+      fetchOrders();
+    } else {
+      console.warn("No token available, user not authenticated.");
+    }
+  }, [token]);
 
   const topSelling = [
     {
@@ -90,38 +123,41 @@ function Overview() {
                 </tr>
               </thead>
               <tbody>
-                {last8Orders.map((order, index) => (
-                  <tr key={order.id}>
-                    <td>
-                      <Link
-                        to={`/admin/orders?order=${order.id}`}
-                        className="text-decoration-none text-primary fw-semibold"
-                      >
-                        #{order.id}
-                      </Link>
-                    </td>
-                    <td className="d-flex align-items-center mb-2">
-                      <img
-                        src={`https://picsum.photos/seed/customer${index}/40/40`}
-                        alt="avatar"
-                        className="rounded-circle me-2"
-                        style={{
-                          width: "30px",
-                          height: "30px",
-                          objectFit: "cover",
-                        }}
-                      />
-                      {order.user?.firstname || "No nombre"}{" "}
-                      {order.user?.lastname || ""}
-                    </td>
-                    <td>
-                      <span className={getStatusStyle(order.status)}>
-                        {order.status}
-                      </span>
-                    </td>
-                    <td>${order.totalAmount}</td>
-                  </tr>
-                ))}
+                {[...orders]
+                  .sort((a, b) => b.id - a.id)
+                  .slice(0, 7)
+                  .map((order, index) => (
+                    <tr key={order.id}>
+                      <td>
+                        <Link
+                          to={`/admin/orders?order=${order.id}`}
+                          className="text-decoration-none text-primary fw-semibold"
+                        >
+                          #{order.id}
+                        </Link>
+                      </td>
+                      <td className="d-flex align-items-center mb-2">
+                        <img
+                          src={`https://picsum.photos/seed/customer${index}/40/40`}
+                          alt="avatar"
+                          className="rounded-circle me-2"
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            objectFit: "cover",
+                          }}
+                        />
+                        {order.user?.firstname || "No nombre"}{" "}
+                        {order.user?.lastname || ""}
+                      </td>
+                      <td>
+                        <span className={getStatusStyle(order.status)}>
+                          {order.status}
+                        </span>
+                      </td>
+                      <td>${order.totalAmount}</td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -147,24 +183,27 @@ function Overview() {
 
         <div className="col border rounded shadow p-4 bg-white">
           <h5 className="fw-bold mb-4 fs-4">Customers</h5>
-          {last8Orders.map((order, index) => (
-            <div key={index} className="d-flex align-items-center mb-4">
-              <img
-                src={`https://picsum.photos/seed/customer${index}/40/40`}
-                alt="avatar"
-                className="rounded-circle me-3"
-              />
-              <div>
-                <div className="fw-semibold">
-                  {order.user?.firstname || "No nombre"}{" "}
-                  {order.user?.lastname || ""}
-                </div>
-                <div className="text-muted fs-6">
-                  Email: {order.user?.email || "No email"}
+          {[...orders]
+            .sort((a, b) => b.id - a.id)
+            .slice(0, 7)
+            .map((order, index) => (
+              <div key={index} className="d-flex align-items-center mb-4">
+                <img
+                  src={`https://picsum.photos/seed/customer${index}/40/40`}
+                  alt="avatar"
+                  className="rounded-circle me-3"
+                />
+                <div>
+                  <div className="fw-semibold">
+                    {order.user?.firstname || "No nombre"}{" "}
+                    {order.user?.lastname || ""}
+                  </div>
+                  <div className="text-muted fs-6">
+                    Email: {order.user?.email || "No email"}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </div>
