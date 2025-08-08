@@ -64,6 +64,18 @@ function ProductsPage() {
     }
   };
 
+  async function uploadProductImage(file) {
+    const fileName = `${Date.now()}-${file.name}`;
+    const { data, error } = await supabase.storage
+      .from("products")
+      .upload(fileName, file);
+    if (error) throw new Error("Error uploading image");
+
+    const publicUrl = supabase.storage.from("products").getPublicUrl(fileName)
+      .data.publicUrl;
+    return publicUrl;
+  }
+
   const handleAddOrUpdateProduct = (e) => {
     e.preventDefault();
     if (editingProductId) {
@@ -79,10 +91,7 @@ function ProductsPage() {
       );
       dispatch(setProducts(updatedProducts));
     } else {
-      const newId =
-        products.length > 0 ? Math.max(...products.map((p) => p.id)) + 1 : 1;
       const newProd = {
-        id: newId,
         ...newProduct,
         price: Number(newProduct.price),
         stock: Number(newProduct.stock),
