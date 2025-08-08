@@ -1,38 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useApi } from "../hooks/useApi";
+import { useDispatch, useSelector } from "react-redux";
+import { setUsers } from "../redux/userListSlice";
 
 function UserAdminPanel() {
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      email: "admin@example.com",
-      role: "admin",
-      firstname: "Roberto",
-      lastname: "Admin",
-    },
-    {
-      id: 2,
-      email: "user@example.com",
-      role: "user",
-      firstname: "Carlos",
-      lastname: "User",
-    },
-    {
-      id: 3,
-      email: "moderator@site.com",
-      role: "admin",
-      firstname: "Ana",
-      lastname: "Mod",
-    },
-    {
-      id: 4,
-      email: "guest@domain.com",
-      role: "user",
-      firstname: "Lucía",
-      lastname: "Guest",
-    },
-  ]);
+  const { registerUser, fetchUsers, updateUserRoles, deleteUser } = useApi();
+  const dispatch = useDispatch();
+
+  const [search, setSearch] = useState("");
+  const [pendingRoleChanges, setPendingRoleChanges] = useState({});
+  const users = useSelector((state) => state.userList.users);
 
   const [newUser, setNewUser] = useState({
     email: "",
@@ -43,34 +22,39 @@ function UserAdminPanel() {
     repeatPassword: "",
   });
 
-  const [search, setSearch] = useState("");
-  const [pendingRoleChanges, setPendingRoleChanges] = useState({});
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
-  const handleAddUser = () => {
-    if (
-      !newUser.email ||
-      !newUser.firstname ||
-      !newUser.lastname ||
-      !newUser.password ||
-      !newUser.repeatPassword
-    )
-      return toast.error("All fields are required.");
+  const handleAddUser = async (e) => {
+    e.preventDefault();
+    const { email, role, firstname, lastname, password, repeatPassword } =
+      newUser;
 
-    if (newUser.password !== newUser.repeatPassword)
+    if (password !== repeatPassword) {
       return toast.error("Passwords do not match.");
+    }
 
-    const newId = users.length ? users[users.length - 1].id + 1 : 1;
+    try {
+      const createdUser = await registerUser({
+        email,
+        role,
+        firstname,
+        lastname,
+        password,
+      });
 
-    const userToAdd = {
-      id: newId,
-      email: newUser.email,
-      role: newUser.role,
-      firstname: newUser.firstname,
-      lastname: newUser.lastname,
-    };
+      toast.success("User registered successfully.");
+      const newId = createdUser?.id || users.length + 1;
 
-    setUsers([...users, userToAdd]);
-    toast.success(newUser.role === "admin" ? "Admin created" : "User created");
+      dispatch(
+        setUsers([...users, { id: newId, firstname, lastname, email, role }])
+      );
+    } catch (error) {
+      const message = error.response?.data?.message || "Registration failed";
+      toast.error(message);
+      console.error("Error:", error);
+    }
 
     setNewUser({
       email: "",
@@ -82,9 +66,13 @@ function UserAdminPanel() {
     });
   };
 
-  const handleDeleteUser = (id) => {
-    setUsers(users.filter((u) => u.id !== id));
-    toast.error("User deleted");
+  const handleDeleteUser = async (id) => {
+    try {
+      await deleteUser(id);
+      await fetchUsers();
+    } catch (error) {
+      toast.error("Failed to delete user");
+    }
   };
 
   const handleRoleSelect = (id, newRole) => {
@@ -94,32 +82,35 @@ function UserAdminPanel() {
     });
   };
 
-  const confirmRoleChange = (id) => {
-    const currentUser = users.find((u) => u.id === id);
-    const newRole = pendingRoleChanges[id];
-
-    setUsers(
-      users.map((user) => (user.id === id ? { ...user, role: newRole } : user))
-    );
-
-    if (currentUser.role === "admin" && newRole === "user") {
-      toast.info("Admin changed to user");
-    } else if (currentUser.role === "user" && newRole === "admin") {
-      toast.info("User changed to admin");
-    }
-
-    setPendingRoleChanges({
-      ...pendingRoleChanges,
-      [id]: undefined,
-    });
-  };
-
   const cancelRoleChange = (id) => {
     setPendingRoleChanges({
       ...pendingRoleChanges,
       [id]: undefined,
     });
   };
+
+  const confirmRoleChange = async (id) => {
+    const newRole = pendingRoleChanges[id];
+    if (!newRole) return;
+
+    try {
+      await updateUserRoles(id, newRole);
+      setPendingRoleChanges((prev) => ({
+        ...prev,
+        [id]: undefined,
+      }));
+
+      await fetchUsers();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const filteredAdmins = users.filter(
+    (user) =>
+      user.role === "admin" &&
+      user.email.toLowerCase().includes(search.toLowerCase())
+  );
 
   const filteredUsers = users.filter(
     (user) =>
@@ -232,55 +223,53 @@ function UserAdminPanel() {
                 </tr>
               </thead>
               <tbody>
-                {users
-                  .filter((u) => u.role === "admin")
-                  .map((user) => (
-                    <tr key={user.id}>
-                      <td>{user.id}</td>
-                      <td>{user.firstname}</td>
-                      <td>{user.lastname}</td>
-                      <td>{user.email}</td>
-                      <td>
-                        <div className="d-flex align-items-center gap-2">
-                          <select
-                            className="form-select"
-                            value={pendingRoleChanges[user.id] || user.role}
-                            onChange={(e) =>
-                              handleRoleSelect(user.id, e.target.value)
-                            }
-                          >
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                          </select>
-                          {pendingRoleChanges[user.id] &&
-                            pendingRoleChanges[user.id] !== user.role && (
-                              <>
-                                <button
-                                  className="btn btn-sm btn-success"
-                                  onClick={() => confirmRoleChange(user.id)}
-                                >
-                                  ✓
-                                </button>
-                                <button
-                                  className="btn btn-sm btn-secondary"
-                                  onClick={() => cancelRoleChange(user.id)}
-                                >
-                                  ✕
-                                </button>
-                              </>
-                            )}
-                        </div>
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-sm btn-danger"
-                          onClick={() => handleDeleteUser(user.id)}
+                {filteredAdmins.map((user) => (
+                  <tr key={user.id}>
+                    <td>{user.id}</td>
+                    <td>{user.firstname}</td>
+                    <td>{user.lastname}</td>
+                    <td>{user.email}</td>
+                    <td>
+                      <div className="d-flex align-items-center gap-2">
+                        <select
+                          className="form-select"
+                          value={pendingRoleChanges[user.id] || user.role}
+                          onChange={(e) =>
+                            handleRoleSelect(user.id, e.target.value)
+                          }
                         >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                          <option value="user">User</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                        {pendingRoleChanges[user.id] &&
+                          pendingRoleChanges[user.id] !== user.role && (
+                            <>
+                              <button
+                                className="btn btn-sm btn-success"
+                                onClick={() => confirmRoleChange(user.id)}
+                              >
+                                ✓
+                              </button>
+                              <button
+                                className="btn btn-sm btn-secondary"
+                                onClick={() => cancelRoleChange(user.id)}
+                              >
+                                ✕
+                              </button>
+                            </>
+                          )}
+                      </div>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-sm btn-danger"
+                        onClick={() => handleDeleteUser(user.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
