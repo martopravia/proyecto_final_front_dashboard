@@ -8,28 +8,21 @@ import {
   updateCategory,
   deleteCategory,
 } from "../redux/categorySlice";
+import { useApi } from "../hooks/useApi";
 
 function CategoriesPage() {
-  const dispatch = useDispatch();
   const categories = useSelector((state) => state.category.categories);
 
   const [showModal, setShowModal] = useState(false);
   const [editingCategoryId, setEditingCategoryId] = useState(null);
   const [categoryName, setCategoryName] = useState("");
 
+  const { getCategories, postCategory, patchCategory, destroyCategory } =
+    useApi();
+
   useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/categories`
-        );
-        dispatch(setCategories(res.data));
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    }
-    fetchCategories();
-  }, [dispatch]);
+    getCategories();
+  }, []);
 
   const handleOpenAddModal = () => {
     setEditingCategoryId(null);
@@ -45,8 +38,7 @@ function CategoriesPage() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/categories/${id}`);
-      dispatch(deleteCategory(id));
+      destroyCategory(id);
     } catch (error) {
       console.error("Error deleting category:", error);
     }
@@ -58,19 +50,9 @@ function CategoriesPage() {
 
     try {
       if (editingCategoryId) {
-        const res = await axios.put(
-          `${import.meta.env.VITE_API_URL}/categories/${editingCategoryId}`,
-          {
-            name: categoryName,
-          }
-        );
-        dispatch(updateCategory(res.data));
+        patchCategory({ id: editingCategoryId, name: categoryName });
       } else {
-        const res = await axios.post(
-          `${import.meta.env.VITE_API_URL}/categories`,
-          { name: categoryName }
-        );
-        dispatch(addCategory(res.data));
+        postCategory({ name: categoryName });
       }
       setShowModal(false);
       setCategoryName("");

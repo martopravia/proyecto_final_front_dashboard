@@ -26,7 +26,6 @@ function Overview() {
         );
 
         dispatch(setOrders(response.data));
-        console.log("Fetched orders:", response.data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
@@ -69,7 +68,6 @@ function Overview() {
         return `${base} bg-secondary bg-opacity-25 text-secondary`;
     }
   };
-  console.log("Órdenes desde Redux:", orders);
   return (
     <div className="mt-4 mx-4" style={{ width: "100%" }}>
       <div className="row d-flex gap-3">

@@ -13,11 +13,10 @@ const categorySlice = createSlice({
       state.categories.push(action.payload);
     },
     updateCategory: (state, action) => {
-      const { id, name } = action.payload;
-      const index = state.categories.findIndex((cat) => cat.id === id);
-      if (index !== -1) {
-        state.categories[index].name = name;
-      }
+      const category = state.categories.find(
+        (category) => category.id === action.payload.id
+      );
+      Object.assign(category, action.payload);
     },
     deleteCategory: (state, action) => {
       state.categories = state.categories.filter(

@@ -2,7 +2,6 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/userSlice";
 import { useMemo } from "react";
-
 import { toast } from "react-toastify";
 import { setUsers } from "../redux/userListSlice";
 import {
@@ -11,6 +10,12 @@ import {
   editProduct,
   setProducts,
 } from "../redux/productSlice";
+import {
+  addCategory,
+  deleteCategory,
+  setCategories,
+  updateCategory,
+} from "../redux/categorySlice";
 
 export const useApi = () => {
   const dispatch = useDispatch();
@@ -34,7 +39,6 @@ export const useApi = () => {
         },
       });
       dispatch(login({ user, token }));
-      // console.log("User logged in:", user, "to token:", token);
 
       return { token, user };
     } catch (error) {
@@ -163,6 +167,63 @@ export const useApi = () => {
     }
   };
 
+  const getCategories = async (params) => {
+    try {
+      const response = await api.get("/categories", {
+        params,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(setCategories(response.data));
+      return response.data;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const postCategory = async (category) => {
+    try {
+      const response = await api.post(`/categories`, category, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(addCategory(response.data));
+      return response.data;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const patchCategory = async (category) => {
+    try {
+      const response = await api.patch(`/categories/${category.id}`, category, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(updateCategory(response.data));
+      return response.data;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const destroyCategory = async (id) => {
+    try {
+      const response = await api.delete(`/categories/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(deleteCategory(id));
+      return response.data;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return {
     loginUser,
     // registerUser,
@@ -174,5 +235,9 @@ export const useApi = () => {
     fetchUsers,
     deleteUser,
     updateUserRoles,
+    getCategories,
+    postCategory,
+    patchCategory,
+    destroyCategory,
   };
 };

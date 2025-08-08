@@ -26,7 +26,6 @@ function OrdersPage() {
         );
 
         dispatch(setOrders(response.data));
-        console.log("Fetched orders:", response.data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
