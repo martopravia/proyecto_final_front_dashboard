@@ -1,13 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
-import {
-  setCategories,
-  addCategory,
-  updateCategory,
-  deleteCategory,
-} from "../redux/categorySlice";
+import { useSelector } from "react-redux";
 import { useApi } from "../hooks/useApi";
 
 function CategoriesPage() {
