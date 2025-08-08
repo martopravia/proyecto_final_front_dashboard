@@ -1,16 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import {
+  setCategories,
+  addCategory,
+  updateCategory,
+  deleteCategory,
+} from "../redux/categorySlice";
 
 function CategoriesPage() {
-  const [categories, setCategories] = useState([
-    { id: 1, name: "Chairs" },
-    { id: 2, name: "Tables" },
-    { id: 3, name: "Sofas" },
-  ]);
+  const dispatch = useDispatch();
+  const categories = useSelector((state) => state.category.categories);
 
   const [showModal, setShowModal] = useState(false);
   const [editingCategoryId, setEditingCategoryId] = useState(null);
   const [categoryName, setCategoryName] = useState("");
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/categories`
+        );
+        dispatch(setCategories(res.data));
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    }
+    fetchCategories();
+  }, [dispatch]);
 
   const handleOpenAddModal = () => {
     setEditingCategoryId(null);
@@ -24,27 +43,41 @@ function CategoriesPage() {
     setShowModal(true);
   };
 
-  const handleDelete = (id) => {
-    setCategories((prev) => prev.filter((c) => c.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/categories/${id}`);
+      dispatch(deleteCategory(id));
+    } catch (error) {
+      console.error("Error deleting category:", error);
+    }
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    if (editingCategoryId) {
-      setCategories((prev) =>
-        prev.map((cat) =>
-          cat.id === editingCategoryId ? { ...cat, name: categoryName } : cat
-        )
-      );
-    } else {
-      setCategories((prev) => [
-        ...prev,
-        { id: Date.now(), name: categoryName },
-      ]);
+    if (!categoryName.trim()) return;
+
+    try {
+      if (editingCategoryId) {
+        const res = await axios.put(
+          `${import.meta.env.VITE_API_URL}/categories/${editingCategoryId}`,
+          {
+            name: categoryName,
+          }
+        );
+        dispatch(updateCategory(res.data));
+      } else {
+        const res = await axios.post(
+          `${import.meta.env.VITE_API_URL}/categories`,
+          { name: categoryName }
+        );
+        dispatch(addCategory(res.data));
+      }
+      setShowModal(false);
+      setCategoryName("");
+      setEditingCategoryId(null);
+    } catch (error) {
+      console.error("Error saving category:", error);
     }
-    setShowModal(false);
-    setCategoryName("");
-    setEditingCategoryId(null);
   };
 
   return (

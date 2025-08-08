@@ -2,7 +2,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/userSlice";
 import { useMemo } from "react";
-// import { setProducts } from "../redux/productsSlice";
+
 import { toast } from "react-toastify";
 
 export const useApi = () => {
