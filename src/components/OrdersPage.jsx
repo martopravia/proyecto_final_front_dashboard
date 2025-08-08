@@ -77,17 +77,14 @@ function OrdersPage() {
                   .sort((a, b) => b.id - a.id)
 
                   .map((order, index) => (
-                    <tr key={order.id}>
-                      <td>
-                        <button
-                          onClick={() =>
-                            navigate(`/admin/orders?order=${order.id}`)
-                          }
-                          className="btn btn-link p-0 text-decoration-none fw-semibold text-primary"
-                        >
-                          #{order.id}
-                        </button>
-                      </td>
+                    <tr
+                      key={order.id}
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        navigate(`/admin/orders?order=${order.id}`)
+                      }
+                    >
+                      <td>#{order.id}</td>
                       <td className="d-flex align-items-center mb-2">
                         <img
                           src={`https://picsum.photos/seed/customer${index}/40/40`}
