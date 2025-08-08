@@ -1,32 +1,12 @@
-import { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { setProducts, editProduct } from "../redux/productSlice";
-import { useApi } from "../hooks/useApi";
-import axios from "axios";
+import { useState } from "react";
+import { Modal, Button } from "react-bootstrap";
 import FormProducts from "./FormProducts";
+import { useCategoryProducts } from "../hooks/useCategoryProducts";
+import { useApi } from "../hooks/useApi";
 
 function ProductsPage() {
-  const dispatch = useDispatch();
-  const products = useSelector((state) => state.products.items);
-  const token = useSelector((state) => state.user.token);
-  const { getProducts } = useApi();
-
-  // console.log(products);
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/products`
-        );
-        dispatch(setProducts(response.data));
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
-    fetchProducts();
-  }, [dispatch]);
+  const { products } = useCategoryProducts();
+  const { postProduct, patchProduct, destroyProduct } = useApi();
 
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showModalUpdate, setShowModalUpdate] = useState(false);
@@ -55,65 +35,10 @@ function ProductsPage() {
     });
   };
 
-  async function uploadProductImage(file) {
-    const fileName = `${Date.now()}-${file.name}`;
-    const { data, error } = await supabase.storage
-      .from("products")
-      .upload(fileName, file);
-    if (error) throw new Error("Error uploading image");
-
-    const publicUrl = supabase.storage.from("products").getPublicUrl(fileName)
-      .data.publicUrl;
-    return publicUrl;
-  }
-
-  const updateProduct = async (productData) => {
-    try {
-      let image = productData?.image;
-      if (image) {
-        const publicUrl = await uploadProductImage(image);
-        image = publicUrl;
-      }
-      const response = await axios.patch(
-        `${import.meta.env.VITE_API_URL}/products/${productData.id}`,
-        productData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.log("Error updating product:", error);
-    }
-  };
-
-  const addProduct = async (productData) => {
-    try {
-      let image = productData.image;
-      if (image) {
-        const publicUrl = await uploadProductImage(image);
-        image = publicUrl;
-      }
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/products`,
-
-        productData,
-
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.log("Error updating product:", error);
-    }
-  };
-
   const handleAddProduct = async (e) => {
     e.preventDefault();
     try {
-      const addedProduct = await addProduct(newProduct);
-      dispatch(setProducts([...products, addedProduct]));
+      await postProduct(newProduct);
       resetModal();
       setShowModalAdd(false);
     } catch (error) {
@@ -132,9 +57,7 @@ function ProductsPage() {
         delete productData.image;
       }
 
-      await updateProduct(productData);
-
-      dispatch(editProduct(productData));
+      await patchProduct(productData);
       resetModal();
       setShowModalUpdate(false);
     } catch (error) {
@@ -142,9 +65,8 @@ function ProductsPage() {
     }
   };
 
-  const handleDelete = (id) => {
-    const filtered = products.filter((p) => p.id !== id);
-    dispatch(setProducts(filtered));
+  const handleDelete = async (id) => {
+    await destroyProduct(id);
   };
 
   const handleEdit = (product) => {

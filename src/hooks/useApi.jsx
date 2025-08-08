@@ -2,9 +2,14 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/userSlice";
 import { useMemo } from "react";
-// import { setProducts } from "../redux/productsSlice";
 import { toast } from "react-toastify";
 import { setUsers } from "../redux/userListSlice";
+import {
+  addProduct,
+  deleteProduct,
+  editProduct,
+  setProducts,
+} from "../redux/productSlice";
 
 export const useApi = () => {
   const dispatch = useDispatch();
@@ -97,13 +102,73 @@ export const useApi = () => {
       toast.success("User role updated successfully");
       await fetchUsers();
     } catch (error) {
+      toast.error("Error updating user roles");
       console.error("Error updating user roles:", error);
       throw error;
     }
   };
 
+  const patchProduct = async (product) => {
+    try {
+      const formData = new FormData();
+      for (const key in product) {
+        formData.append(key, product[key]);
+      }
+
+      const response = await api.patch(`/products/${product.id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(editProduct(response.data));
+      return response.data;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const postProduct = async (product) => {
+    try {
+      const formData = new FormData();
+      for (const key in product) {
+        formData.append(key, product[key]);
+      }
+
+      const response = await api.post(`/products`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(addProduct(response.data));
+      return response.data;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const destroyProduct = async (id) => {
+    try {
+      const response = await api.delete(`/products/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(deleteProduct(id));
+      return response.data;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return {
     loginUser,
+    // registerUser,
+    getProducts,
+    postProduct,
+    patchProduct,
+    destroyProduct,
     registerUser,
     fetchUsers,
     deleteUser,

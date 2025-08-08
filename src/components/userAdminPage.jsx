@@ -95,7 +95,6 @@ function UserAdminPanel() {
 
     try {
       await updateUserRoles(id, newRole);
-      toast.success(`Rol actualizado a ${newRole}`);
       setPendingRoleChanges((prev) => ({
         ...prev,
         [id]: undefined,
@@ -103,7 +102,7 @@ function UserAdminPanel() {
 
       await fetchUsers();
     } catch (error) {
-      toast.error("Error al actualizar el rol");
+      console.log(error);
     }
   };
 
