@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -12,6 +12,7 @@ function OrdersPage() {
   const orders = useSelector((state) => state.order.orders);
   const dispatch = useDispatch();
 
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -80,12 +81,16 @@ function OrdersPage() {
                     <tr
                       key={order.id}
                       style={{ cursor: "pointer" }}
-                      onClick={() =>
-                        navigate(`/admin/orders?order=${order.id}`)
+                      className={
+                        selectedOrderId === order.id ? "table-active" : ""
                       }
+                      onClick={() => {
+                        setSelectedOrderId(order.id);
+                        navigate(`/admin/orders?order=${order.id}`);
+                      }}
                     >
                       <td>#{order.id}</td>
-                      <td className="d-flex align-items-center mb-2">
+                      <td className="d-flex align-items-center ">
                         <img
                           src={`https://picsum.photos/seed/customer${index}/40/40`}
                           alt="avatar"
