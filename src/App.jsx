@@ -14,12 +14,16 @@ import UserAdminPanel from "./components/userAdminPage";
 import PrivateRoute from "./components/privateRoute";
 import { ToastContainer } from "react-toastify";
 import { Bounce } from "react-toastify";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 
 function App() {
   return (
     <>
       <Routes>
         <Route path="" element={<Login />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="reset-password/:token" element={<ResetPassword />} />
         <Route
           path="/admin"
           element={
