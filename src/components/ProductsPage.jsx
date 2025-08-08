@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { setProducts } from "../redux/productSlice";
+import { setProducts, editProduct } from "../redux/productSlice";
 import { useApi } from "../hooks/useApi";
 import axios from "axios";
+import FormProducts from "./FormProducts";
 
 function ProductsPage() {
   const dispatch = useDispatch();
@@ -11,7 +12,7 @@ function ProductsPage() {
   const token = useSelector((state) => state.user.token);
   const { getProducts } = useApi();
 
-  console.log(products);
+  // console.log(products);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -27,9 +28,11 @@ function ProductsPage() {
     fetchProducts();
   }, [dispatch]);
 
-  const [showModal, setShowModal] = useState(false);
-  const [editingProductId, setEditingProductId] = useState(null);
+  const [showModalAdd, setShowModalAdd] = useState(false);
+  const [showModalUpdate, setShowModalUpdate] = useState(false);
+
   const [newProduct, setNewProduct] = useState({
+    id: "",
     name: "",
     description: "",
     price: "",
@@ -41,6 +44,7 @@ function ProductsPage() {
 
   const resetModal = () => {
     setNewProduct({
+      id: "",
       name: "",
       description: "",
       price: "",
@@ -49,19 +53,6 @@ function ProductsPage() {
       category: "",
       image: null,
     });
-    setEditingProductId(null);
-  };
-
-  const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
-    if (type === "file") {
-      setNewProduct((prev) => ({ ...prev, image: files[0] }));
-    } else {
-      setNewProduct((prev) => ({
-        ...prev,
-        [name]: type === "checkbox" ? checked : value,
-      }));
-    }
   };
 
   async function uploadProductImage(file) {
@@ -76,35 +67,79 @@ function ProductsPage() {
     return publicUrl;
   }
 
-  const handleAddOrUpdateProduct = (e) => {
-    e.preventDefault();
-    if (editingProductId) {
-      const updatedProducts = products.map((p) =>
-        p.id === editingProductId
-          ? {
-              ...p,
-              ...newProduct,
-              price: Number(newProduct.price),
-              stock: Number(newProduct.stock),
-            }
-          : p
+  const updateProduct = async (productData) => {
+    try {
+      let image = productData?.image;
+      if (image) {
+        const publicUrl = await uploadProductImage(image);
+        image = publicUrl;
+      }
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_URL}/products/${productData.id}`,
+        productData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
-      dispatch(setProducts(updatedProducts));
-    } else {
-      const newProd = {
-        ...newProduct,
-        price: Number(newProduct.price),
-        stock: Number(newProduct.stock),
-        category: newProduct.category || "Uncategorized",
-        image:
-          newProduct.image instanceof File
-            ? URL.createObjectURL(newProduct.image)
-            : newProduct.image,
-      };
-      dispatch(setProducts([...products, newProd]));
+      return response.data;
+    } catch (error) {
+      console.log("Error updating product:", error);
     }
-    resetModal();
-    setShowModal(false);
+  };
+
+  const addProduct = async (productData) => {
+    try {
+      let image = productData.image;
+      if (image) {
+        const publicUrl = await uploadProductImage(image);
+        image = publicUrl;
+      }
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/products`,
+
+        productData,
+
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log("Error updating product:", error);
+    }
+  };
+
+  const handleAddProduct = async (e) => {
+    e.preventDefault();
+    try {
+      const addedProduct = await addProduct(newProduct);
+      dispatch(setProducts([...products, addedProduct]));
+      resetModal();
+      setShowModalAdd(false);
+    } catch (error) {
+      console.error("Error adding product:", error);
+    }
+  };
+
+  const handleUpdateProduct = async (e) => {
+    e.preventDefault();
+    try {
+      const productData = {
+        ...newProduct,
+      };
+
+      if (!newProduct.image) {
+        delete productData.image;
+      }
+
+      await updateProduct(productData);
+
+      dispatch(editProduct(productData));
+      resetModal();
+      setShowModalUpdate(false);
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
   };
 
   const handleDelete = (id) => {
@@ -113,8 +148,8 @@ function ProductsPage() {
   };
 
   const handleEdit = (product) => {
-    setEditingProductId(product.id);
     setNewProduct({
+      id: product.id,
       name: product.name,
       description: product.description,
       price: product.price,
@@ -123,12 +158,13 @@ function ProductsPage() {
       image: null,
       category: product.category,
     });
-    setShowModal(true);
+    setShowModalUpdate(true);
   };
 
   const handleModalClose = () => {
     resetModal();
-    setShowModal(false);
+    setShowModalUpdate(false);
+    setShowModalAdd(false);
   };
 
   function capitalizeFirstLetter(string) {
@@ -145,7 +181,7 @@ function ProductsPage() {
             variant="primary"
             onClick={() => {
               resetModal();
-              setShowModal(true);
+              setShowModalAdd(true);
             }}
           >
             Add Product
@@ -203,111 +239,32 @@ function ProductsPage() {
         </div>
       </div>
 
-      <Modal show={showModal} onHide={handleModalClose} centered>
+      <Modal show={showModalUpdate} onHide={handleModalClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>
-            {editingProductId ? "Edit Product" : "Add New Product"}
-          </Modal.Title>
+          <Modal.Title>Edit Product</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={handleAddOrUpdateProduct}>
-            <Form.Group className="mb-2">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                name="name"
-                value={newProduct.name}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-2">
-              <Form.Label>Description</Form.Label>
-              <Form.Control
-                name="description"
-                value={newProduct.description}
-                onChange={handleChange}
-                as="textarea"
-                rows={2}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-2">
-              <Form.Label>Price</Form.Label>
-              <Form.Control
-                name="price"
-                type="number"
-                step="0.01"
-                value={newProduct.price}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-2">
-              <Form.Label>Stock</Form.Label>
-              <Form.Control
-                name="stock"
-                type="number"
-                value={newProduct.stock}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-2">
-              <Form.Label>Category</Form.Label>
-              <Form.Select
-                name="category"
-                value={newProduct.category}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select category</option>
-                <option value="chairs">Chairs</option>
-                <option value="tables">Tables</option>
-                <option value="sofas">Sofas</option>
-              </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Upload Image</Form.Label>
-              <Form.Control
-                type="file"
-                name="image"
-                accept="image/*"
-                onChange={handleChange}
-                required={!editingProductId}
-              />
-              {newProduct.image && (
-                <img
-                  src={
-                    newProduct.image instanceof File
-                      ? URL.createObjectURL(newProduct.image)
-                      : newProduct.image
-                  }
-                  alt="Preview"
-                  style={{ maxWidth: "100%", marginTop: "10px" }}
-                />
-              )}
-            </Form.Group>
-            <Form.Check
-              name="featured"
-              type="checkbox"
-              label="Featured"
-              checked={newProduct.featured}
-              onChange={handleChange}
-              className="mb-3"
-            />
-            <div className="text-end">
-              <Button
-                variant="secondary"
-                onClick={handleModalClose}
-                className="me-2"
-              >
-                Cancel
-              </Button>
-              <Button variant="primary" type="submit">
-                {editingProductId ? "Save Changes" : "Add Product"}
-              </Button>
-            </div>
-          </Form>
+          <FormProducts
+            setNewProduct={setNewProduct}
+            product={newProduct}
+            isEditing={true}
+            onCancel={handleModalClose}
+            onSubmit={handleUpdateProduct}
+          />
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={showModalAdd} onHide={handleModalClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Add New Product</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <FormProducts
+            setNewProduct={setNewProduct}
+            onCancel={handleModalClose}
+            product={newProduct}
+            onSubmit={handleAddProduct}
+          />
         </Modal.Body>
       </Modal>
     </div>
