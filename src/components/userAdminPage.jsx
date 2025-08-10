@@ -66,13 +66,59 @@ function UserAdminPanel() {
     });
   };
 
-  const handleDeleteUser = async (id) => {
-    try {
-      await deleteUser(id);
-      await fetchUsers();
-    } catch (error) {
-      toast.error("Failed to delete user");
-    }
+  const handleDeleteUser = (id) => {
+    const user = users.find((u) => u.id === id);
+    const displayName = user
+      ? `${user.firstname} ${user.lastname}`
+      : `ID ${id}`;
+
+    toast.info(
+      ({ closeToast }) => (
+        <div style={{ color: "white" }}>
+          <p>Are you sure you want to delete {displayName}?</p>
+          <div className="d-flex justify-content-end gap-2 mt-2">
+            <button
+              className="btn btn-danger btn-sm"
+              onClick={async () => {
+                try {
+                  await deleteUser(id);
+                  await fetchUsers();
+                  closeToast();
+                  toast.success(
+                    `${
+                      user?.role === "admin" ? "Admin" : "User"
+                    } deleted successfully`,
+                    { theme: "dark" }
+                  );
+                } catch (error) {
+                  closeToast();
+                  toast.error("Failed to delete user", { theme: "dark" });
+                }
+              }}
+            >
+              Accept
+            </button>
+            <button className="btn btn-secondary btn-sm" onClick={closeToast}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        position: "top-right",
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+        draggable: false,
+        pauseOnHover: true,
+        style: {
+          backgroundColor: "black",
+          color: "white",
+          borderRadius: "8px",
+          padding: "16px",
+        },
+      }
+    );
   };
 
   const handleRoleSelect = (id, newRole) => {
