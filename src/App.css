@@ -12,3 +12,8 @@ html {
   position: fixed;
   height: 100vh;
 }
+
+.Toastify__toast {
+  background-color: black !important;
+  color: white !important;
+}

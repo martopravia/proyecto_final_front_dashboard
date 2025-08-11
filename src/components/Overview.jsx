@@ -153,7 +153,9 @@ function Overview() {
                           {order.status}
                         </span>
                       </td>
-                      <td>${order.totalAmount}</td>
+                      <td>
+                        U$S {Number(order.totalAmount).toLocaleString("de-DE")}
+                      </td>
                     </tr>
                   ))}
               </tbody>
