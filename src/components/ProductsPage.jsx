@@ -130,8 +130,8 @@ function ProductsPage() {
                   <p className="text-muted small mb-2">{product.description}</p>
                   <div className="mt-auto">
                     <div className="mb-2">
-                      <strong>Price:</strong> $
-                      {Number(product.price).toFixed(2)} <br />
+                      <strong>Price:</strong> U$S{" "}
+                      {Number(product.price).toLocaleString("de-DE")} <br />
                       <strong>Stock:</strong> {product.stock}
                       <br />
                       <strong>Category:</strong>{" "}

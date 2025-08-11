@@ -108,7 +108,9 @@ function OrdersPage() {
                           {order.status}
                         </span>
                       </td>
-                      <td>${order.totalAmount}</td>
+                      <td>
+                        U$S {Number(order.totalAmount).toLocaleString("de-DE")}
+                      </td>
                     </tr>
                   ))}
               </tbody>
@@ -135,7 +137,11 @@ function OrdersPage() {
                 </span>
               </div>
               <div className="mb-3">
-                <strong>Total Amount:</strong> ${selectedOrder.totalAmount}
+                <strong>Total Amount:</strong> U$S{" "}
+                {Number(selectedOrder.totalAmount).toLocaleString("de-DE", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </div>
               <hr />
               <h5 className="fw-bold mb-3">Items</h5>
@@ -143,16 +149,20 @@ function OrdersPage() {
                 <thead className="table-light">
                   <tr>
                     <th>Product</th>
-                    <th className="text-center">Qty</th>
+                    <th className="text-center">Quantity</th>
                     <th className="text-end">Price</th>
                   </tr>
                 </thead>
                 <tbody>
                   {selectedOrder.orderDetails.map((item, idx) => (
                     <tr key={idx}>
-                      <td>{item.name}</td>
+                      <td>
+                        {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
+                      </td>
                       <td className="text-center">{item.quantity}</td>
-                      <td className="text-end">${item.unitPrice}</td>
+                      <td className="text-end">
+                        U$S {Number(item.unitPrice).toLocaleString("de-DE")}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

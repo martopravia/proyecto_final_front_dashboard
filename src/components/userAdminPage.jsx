@@ -74,7 +74,7 @@ function UserAdminPanel() {
 
     toast.info(
       ({ closeToast }) => (
-        <div style={{ color: "white" }}>
+        <div>
           <p>Are you sure you want to delete {displayName}?</p>
           <div className="d-flex justify-content-end gap-2 mt-2">
             <button
@@ -84,12 +84,6 @@ function UserAdminPanel() {
                   await deleteUser(id);
                   await fetchUsers();
                   closeToast();
-                  toast.success(
-                    `${
-                      user?.role === "admin" ? "Admin" : "User"
-                    } deleted successfully`,
-                    { theme: "dark" }
-                  );
                 } catch (error) {
                   closeToast();
                   toast.error("Failed to delete user", { theme: "dark" });
