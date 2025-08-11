@@ -95,7 +95,7 @@ function ProductsPage() {
   }
 
   return (
-    <div className="mx-5" style={{ width: "80%" }}>
+    <div className="mx-4" style={{ width: "100%" }}>
       <div className="row mt-4 d-flex gap-3">
         <div className="col-12 d-flex justify-content-between align-items-center p-0">
           <h3 className="fw-bold">Products</h3>
