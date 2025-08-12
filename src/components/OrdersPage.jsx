@@ -4,6 +4,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setOrders } from "../redux/orderSlice";
+import { toast } from "react-toastify";
 
 function OrdersPage() {
   const [searchParams] = useSearchParams();
@@ -13,6 +14,8 @@ function OrdersPage() {
   const dispatch = useDispatch();
 
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [newStatus, setNewStatus] = useState("");
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -41,6 +44,12 @@ function OrdersPage() {
   const orderId = searchParams.get("order");
   const selectedOrder = orders.find((order) => order.id.toString() === orderId);
 
+  useEffect(() => {
+    if (selectedOrder) {
+      setNewStatus(selectedOrder.status);
+    }
+  }, [selectedOrder]);
+
   const getStatusStyle = (status) => {
     const base = "px-3 py-1 rounded-full text-sm font-medium";
     switch (status) {
@@ -52,6 +61,35 @@ function OrdersPage() {
         return `${base} bg-danger bg-opacity-25 text-danger`;
       default:
         return `${base} bg-secondary bg-opacity-25 text-secondary`;
+    }
+  };
+
+  const handleStatusChange = async (orderId, status) => {
+    try {
+      console.log(
+        "Sending PATCH request to:",
+        `${import.meta.env.VITE_API_URL}/orders?order=${orderId}`
+      );
+
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_URL}/orders/${orderId}`,
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const updatedOrders = orders.map((order) =>
+        order.id === orderId ? { ...order, status } : order
+      );
+
+      dispatch(setOrders(updatedOrders));
+
+      toast.success("Order status updated successfully");
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      toast.error("Failed to update order status");
     }
   };
 
@@ -129,13 +167,34 @@ function OrdersPage() {
                 <strong>Customer:</strong> {selectedOrder.user?.firstname}{" "}
                 {selectedOrder.user?.lastname} ({selectedOrder.user?.email})
               </div>
-
+              {/* 
               <div className="mb-2">
                 <strong>Status:</strong>{" "}
                 <span className={getStatusStyle(selectedOrder.status)}>
                   {selectedOrder.status}
                 </span>
+              </div> */}
+              <div className="mb-3">
+                <strong>Change Status:</strong>
+                <select
+                  className="form-select"
+                  value={newStatus}
+                  onChange={(e) => setNewStatus(e.target.value)}
+                >
+                  <option value="pending">Pending</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+                <button
+                  className="btn btn-primary mt-2"
+                  onClick={() =>
+                    handleStatusChange(selectedOrder.id, newStatus)
+                  }
+                >
+                  Save Status
+                </button>
               </div>
+
               <div className="mb-3">
                 <strong>Total Amount:</strong> U$S{" "}
                 {Number(selectedOrder.totalAmount).toLocaleString("de-DE", {
