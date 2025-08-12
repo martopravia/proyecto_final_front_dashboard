@@ -22,6 +22,9 @@ const categorySlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    resetCategoriesLastFetched(state) {
+      state.lastFetched = 0;
+    },
     addCategory: (state, action) => {
       state.items.push(action.payload);
     },
@@ -41,6 +44,7 @@ export const {
   categoriesRequested,
   categoriesReceived,
   categoriesRequestFailed,
+  resetCategoriesLastFetched,
   addCategory,
   updateCategory,
   deleteCategory,

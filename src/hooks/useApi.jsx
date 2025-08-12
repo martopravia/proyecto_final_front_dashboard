@@ -8,7 +8,8 @@ import {
   addProduct,
   deleteProduct,
   editProduct,
-  setProducts,
+  productsRequested,
+  productsRequestFailed,
 } from "../redux/productSlice";
 import {
   addCategory,
@@ -57,11 +58,12 @@ export const useApi = () => {
     }
   };
   const getProducts = async (params) => {
+    dispatch(productsRequested());
     try {
       const response = await api.get("/products", { params });
-      dispatch(setProducts(response.data));
       return response.data;
     } catch (error) {
+      dispatch(productsRequestFailed(error.message));
       console.error("Error:", error);
     }
   };
