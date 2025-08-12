@@ -66,11 +66,6 @@ function OrdersPage() {
 
   const handleStatusChange = async (orderId, status) => {
     try {
-      console.log(
-        "Sending PATCH request to:",
-        `${import.meta.env.VITE_API_URL}/orders?order=${orderId}`
-      );
-
       const response = await axios.patch(
         `${import.meta.env.VITE_API_URL}/orders/${orderId}`,
         { status },
