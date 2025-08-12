@@ -4,27 +4,23 @@ import { useApi } from "./useApi";
 
 const STALE_TIME = import.meta.env.VITE_STALE_TIME_SEC * 1000;
 
-export const useCategoryProducts = ({ category } = {}) => {
-  const { getProducts } = useApi();
+export const useCategories = () => {
+  const { getCategories } = useApi();
 
   const {
     items,
     loading,
     error,
     lastFetched = 0,
-  } = useSelector((state) => state.products);
+  } = useSelector((state) => state.categories);
 
   const isStale = Date.now() - lastFetched > STALE_TIME;
 
   useEffect(() => {
     if (!loading && (!items.length || isStale)) {
-      getProducts({ limit: 50 });
+      getCategories({ limit: 50 });
     }
   }, [loading, isStale]);
 
-  const filtered = items.filter((item) =>
-    category ? item.category.name === category : true
-  );
-
-  return { products: filtered, loadingProducts: loading, error };
+  return { categories: items, loadingCategories: loading, error };
 };

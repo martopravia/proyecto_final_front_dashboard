@@ -9,6 +9,19 @@ const productsSlice = createSlice({
     lastFetched: 0,
   },
   reducers: {
+    productsRequested(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    productsReceived(state, action) {
+      state.loading = false;
+      state.items = action.payload;
+      state.lastFetched = Date.now();
+    },
+    productsRequestFailed(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
     setProducts: (state, action) => {
       state.items = action.payload;
     },

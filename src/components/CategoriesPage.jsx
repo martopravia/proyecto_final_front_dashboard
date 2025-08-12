@@ -1,21 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { useSelector } from "react-redux";
 import { useApi } from "../hooks/useApi";
+import { useCategories } from "../hooks/useCategories";
 
 function CategoriesPage() {
-  const categories = useSelector((state) => state.category.categories);
-
   const [showModal, setShowModal] = useState(false);
   const [editingCategoryId, setEditingCategoryId] = useState(null);
   const [categoryName, setCategoryName] = useState("");
 
-  const { getCategories, postCategory, patchCategory, destroyCategory } =
-    useApi();
-
-  useEffect(() => {
-    getCategories();
-  }, []);
+  const { postCategory, patchCategory, destroyCategory } = useApi();
+  const { categories } = useCategories();
 
   const handleOpenAddModal = () => {
     setEditingCategoryId(null);

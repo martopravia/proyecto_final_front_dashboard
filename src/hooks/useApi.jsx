@@ -12,8 +12,10 @@ import {
 } from "../redux/productSlice";
 import {
   addCategory,
+  categoriesReceived,
+  categoriesRequested,
+  categoriesRequestFailed,
   deleteCategory,
-  setCategories,
   updateCategory,
 } from "../redux/categorySlice";
 
@@ -168,16 +170,13 @@ export const useApi = () => {
   };
 
   const getCategories = async (params) => {
+    dispatch(categoriesRequested());
     try {
-      const response = await api.get("/categories", {
-        params,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      dispatch(setCategories(response.data));
+      const response = await api.get("/categories", { params });
+      dispatch(categoriesReceived(response.data));
       return response.data;
     } catch (error) {
+      dispatch(categoriesRequestFailed(error.message));
       console.error("Error:", error);
     }
   };
@@ -186,6 +185,7 @@ export const useApi = () => {
     try {
       const response = await api.post(`/categories`, category, {
         headers: {
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
       });
@@ -200,6 +200,7 @@ export const useApi = () => {
     try {
       const response = await api.patch(`/categories/${category.id}`, category, {
         headers: {
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
       });
@@ -224,6 +225,25 @@ export const useApi = () => {
     }
   };
 
+  const resetDatabase = async () => {
+    try {
+      const response = await api.post(
+        "/admin/reset-db",
+        {},
+        {
+          headers: {
+            "x-reset-key": import.meta.env.VITE_RESET_DB_KEY,
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response;
+    } catch (error) {
+      console.error("Error:", error);
+      throw error;
+    }
+  };
+
   return {
     loginUser,
     // registerUser,
@@ -239,5 +259,6 @@ export const useApi = () => {
     postCategory,
     patchCategory,
     destroyCategory,
+    resetDatabase,
   };
 };
