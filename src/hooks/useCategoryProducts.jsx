@@ -1,11 +1,13 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useApi } from "./useApi";
+import { productsReceived } from "../redux/productSlice";
 
 const STALE_TIME = import.meta.env.VITE_STALE_TIME_SEC * 1000;
 
 export const useCategoryProducts = ({ category } = {}) => {
   const { getProducts } = useApi();
+  const dispatch = useDispatch();
 
   const {
     items,
@@ -14,13 +16,15 @@ export const useCategoryProducts = ({ category } = {}) => {
     lastFetched = 0,
   } = useSelector((state) => state.products);
 
-  const isStale = Date.now() - lastFetched > STALE_TIME;
-
   useEffect(() => {
+    const isStale = Date.now() - lastFetched > STALE_TIME;
+
     if (!loading && (!items.length || isStale)) {
-      getProducts({ limit: 50 });
+      getProducts({ limit: 50 }).then(
+        (res) => res && dispatch(productsReceived(res))
+      );
     }
-  }, [loading, isStale]);
+  }, [loading, items.length, lastFetched, dispatch]);
 
   const filtered = items.filter((item) =>
     category ? item.category.name === category : true

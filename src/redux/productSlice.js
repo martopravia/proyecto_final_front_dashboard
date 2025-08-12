@@ -22,8 +22,8 @@ const productsSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    setProducts: (state, action) => {
-      state.items = action.payload;
+    resetProductsLastFetched(state) {
+      state.lastFetched = 0;
     },
     addProduct: (state, action) => {
       state.items.unshift(action.payload);
@@ -41,5 +41,13 @@ const productsSlice = createSlice({
 });
 
 const { actions, reducer } = productsSlice;
-export const { setProducts, addProduct, editProduct, deleteProduct } = actions;
+export const {
+  productsRequested,
+  productsReceived,
+  productsRequestFailed,
+  resetProductsLastFetched,
+  addProduct,
+  editProduct,
+  deleteProduct,
+} = actions;
 export default reducer;

@@ -1,9 +1,13 @@
 import { toast } from "react-toastify";
 import { useApi } from "../hooks/useApi";
 import { Button } from "react-bootstrap";
+import { resetProductsLastFetched } from "../redux/productSlice";
+import { resetCategoriesLastFetched } from "../redux/categorySlice";
+import { useDispatch } from "react-redux";
 
 export default function ResetDatabaseButton({ className, children }) {
   const { resetDatabase } = useApi();
+  const dispatch = useDispatch();
 
   const resetDB = async () => {
     const response = await toast.promise(
@@ -20,6 +24,8 @@ export default function ResetDatabaseButton({ className, children }) {
 
     if (response.status === 200) {
       toast.info("Refreshing page...");
+      dispatch(resetProductsLastFetched());
+      dispatch(resetCategoriesLastFetched());
       setTimeout(() => {
         window.location.reload();
       }, 2000);
