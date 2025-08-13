@@ -9,7 +9,7 @@ function ForgotPassword() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:3000/tokens/forgot-password",
+        import.meta.env.VITE_API_URL + "/tokens/forgot-password",
         { email }
       );
       setMessage(res.data.message);
