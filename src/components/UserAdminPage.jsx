@@ -5,7 +5,7 @@ import { useApi } from "../hooks/useApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setUsers } from "../redux/userListSlice";
 
-function UserAdminPanel() {
+function UserAdminPage() {
   const { registerUser, fetchUsers, updateUserRoles, deleteUser } = useApi();
   const dispatch = useDispatch();
 
@@ -402,4 +402,4 @@ function UserAdminPanel() {
   );
 }
 
-export default UserAdminPanel;
+export default UserAdminPage;

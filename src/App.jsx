@@ -10,7 +10,7 @@ import Settings from "./components/Settings";
 import Login from "./components/Login";
 
 import CategoriesPage from "./components/CategoriesPage";
-import UserAdminPanel from "./components/UserAdminPage";
+import UserAdminPage from "./components/UserAdminPage";
 import PrivateRoute from "./components/PrivateRoute";
 import { ToastContainer } from "react-toastify";
 import { Bounce } from "react-toastify";
@@ -36,7 +36,7 @@ function App() {
           <Route path="orders" element={<OrdersPage />} />
           <Route path="products" element={<ProductsPage />} />
           <Route path="categories" element={<CategoriesPage />} />
-          <Route path="adminPanel" element={<UserAdminPanel />} />
+          <Route path="adminPanel" element={<UserAdminPage />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
