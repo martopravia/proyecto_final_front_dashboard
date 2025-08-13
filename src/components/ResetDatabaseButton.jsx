@@ -23,11 +23,12 @@ export default function ResetDatabaseButton({ className, children }) {
     );
 
     if (response.status === 200) {
-      toast.info("Refreshing page...");
-      dispatch(resetProductsLastFetched());
-      dispatch(resetCategoriesLastFetched());
+      toast.info("Refreshing page...", {
+        autoClose: 2000,
+      });
       setTimeout(() => {
-        window.location.reload();
+        dispatch(resetProductsLastFetched());
+        dispatch(resetCategoriesLastFetched());
       }, 2000);
     }
   };
