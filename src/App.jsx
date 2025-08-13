@@ -10,8 +10,8 @@ import Settings from "./components/Settings";
 import Login from "./components/Login";
 
 import CategoriesPage from "./components/CategoriesPage";
-import UserAdminPanel from "./components/userAdminPage";
-import PrivateRoute from "./components/privateRoute";
+import UserAdminPanel from "./components/UserAdminPage";
+import PrivateRoute from "./components/PrivateRoute";
 import { ToastContainer } from "react-toastify";
 import { Bounce } from "react-toastify";
 import ForgotPassword from "./components/ForgotPassword";
