@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useApi } from "../hooks/useApi";
 import { useDispatch, useSelector } from "react-redux";
@@ -160,8 +160,6 @@ function UserAdminPage() {
 
   return (
     <div className="mx-4" style={{ width: "100%" }}>
-      <ToastContainer position="top-right" autoClose={3000} />
-
       <div className="d-flex justify-content-between align-items-center mt-4 mb-3">
         <h3 className="fw-bold">Admin Panel</h3>
       </div>

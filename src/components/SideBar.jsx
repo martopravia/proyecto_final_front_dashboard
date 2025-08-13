@@ -1,5 +1,5 @@
 import { NavLink } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { logout } from "../redux/userSlice";
 import { useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
@@ -91,8 +91,6 @@ function SideBar() {
       <button className="btn btn-outline-light mt-3" onClick={handleLogout}>
         Log out
       </button>
-
-      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }
