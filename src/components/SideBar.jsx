@@ -25,7 +25,8 @@ function SideBar() {
       <ul className="nav nav-pills flex-column mb-auto text-center">
         <li className="nav-item">
           <NavLink
-            to={""}
+            to={"/admin"}
+            end
             style={{ color: "white", textDecoration: "none" }}
             className={({ isActive }) =>
               isActive ? "nav-link active" : "nav-link"
