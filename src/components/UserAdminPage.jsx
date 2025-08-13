@@ -314,16 +314,25 @@ function UserAdminPage() {
         </div>
 
         <div className="border rounded shadow p-4 bg-white">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h5 className="fw-bold fs-4">Registered Users</h5>
+          <div
+            className="d-flex align-items-center mb-3"
+            style={{ position: "relative" }}
+          >
+            <h5 className="fw-bold fs-4 mb-0">Registered Users</h5>
             <input
               type="text"
               placeholder="Search by email"
-              className="form-control w-25"
+              className="form-control w-25 mx-auto"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              style={{
+                position: "absolute",
+                left: "50%",
+                transform: "translateX(-50%)",
+              }}
             />
           </div>
+
           <div className="table-responsive">
             <table className="table table-borderless align-middle fs-6">
               <thead>
