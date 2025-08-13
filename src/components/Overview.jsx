@@ -74,7 +74,7 @@ function Overview() {
         <div className="col border rounded shadow p-4 bg-white">
           <h5 className="fw-bold mb-4 fs-4">Today's Sales</h5>
           <img
-            src="src/img/fotoGrafifca.png"
+            src="https://ubmbvouzxyajisbnmzeu.supabase.co/storage/v1/object/public/products/Components/fotoGrafifca.png"
             alt="Sales graph"
             className="img-fluid rounded"
           />
