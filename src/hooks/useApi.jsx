@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../redux/userSlice";
+import { login, logout } from "../redux/userSlice";
 import { useMemo } from "react";
 import { toast } from "react-toastify";
 import { setUsers } from "../redux/userListSlice";
@@ -28,13 +28,31 @@ export const useApi = () => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.user.token);
 
-  const api = useMemo(
-    () =>
-      axios.create({
-        baseURL: import.meta.env.VITE_API_URL,
-      }),
-    []
-  );
+  const api = useMemo(() => {
+    const instance = axios.create({
+      baseURL: import.meta.env.VITE_API_URL,
+    });
+
+    instance.interceptors.request.use((config) => {
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    });
+
+    instance.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          dispatch(logout());
+          toast.info("You've been logged out");
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return instance;
+  }, [dispatch]);
 
   const loginUser = async (data) => {
     try {
@@ -74,11 +92,7 @@ export const useApi = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await api.get("/users", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.get("/users");
       dispatch(setUsers(response.data));
       return response.data;
     } catch (error) {
@@ -88,11 +102,7 @@ export const useApi = () => {
   };
   const deleteUser = async (userId) => {
     try {
-      await api.delete(`/users/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await api.delete(`/users/${userId}`);
       toast.success("User deleted successfully");
       // Optionally, you can refetch users after deletion
       await fetchUsers();
@@ -103,15 +113,7 @@ export const useApi = () => {
   };
   const updateUserRoles = async (userId, newRole) => {
     try {
-      await api.patch(
-        `/users/${userId}`,
-        { role: newRole },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await api.patch(`/users/${userId}`, { role: newRole });
       toast.success("User role updated successfully");
       await fetchUsers();
     } catch (error) {
@@ -131,7 +133,6 @@ export const useApi = () => {
       const response = await api.patch(`/products/${product.id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
         },
       });
       dispatch(editProduct(response.data));
@@ -151,7 +152,6 @@ export const useApi = () => {
       const response = await api.post(`/products`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
         },
       });
       dispatch(addProduct(response.data));
@@ -164,11 +164,7 @@ export const useApi = () => {
   const destroyProduct = async (id) => {
     try {
       dispatch(deleteProduct(id));
-      const response = await api.delete(`/products/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.delete(`/products/${id}`);
       return response.data;
     } catch (error) {
       console.error("Error:", error);
@@ -191,7 +187,6 @@ export const useApi = () => {
       const response = await api.post(`/categories`, category, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
         },
       });
       dispatch(addCategory(response.data));
@@ -206,7 +201,6 @@ export const useApi = () => {
       const response = await api.patch(`/categories/${category.id}`, category, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
         },
       });
       dispatch(updateCategory(response.data));
@@ -218,11 +212,7 @@ export const useApi = () => {
 
   const destroyCategory = async (id) => {
     try {
-      const response = await api.delete(`/categories/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.delete(`/categories/${id}`);
       dispatch(deleteCategory(id));
       return response.data;
     } catch (error) {
@@ -233,12 +223,7 @@ export const useApi = () => {
   const getOrders = async (params) => {
     dispatch(ordersRequested());
     try {
-      const response = await api.get("/orders", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params,
-      });
+      const response = await api.get("/orders", { params });
       return response.data;
     } catch (error) {
       dispatch(ordersRequestFailed(error.message));
@@ -248,11 +233,7 @@ export const useApi = () => {
 
   const patchOrder = async (order) => {
     try {
-      const response = await api.patch(`/orders/${order.id}`, order, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.patch(`/orders/${order.id}`, order);
       dispatch(updateOrder(response.data));
       return response.data;
     } catch (error) {
@@ -269,7 +250,6 @@ export const useApi = () => {
         {
           headers: {
             "x-reset-key": import.meta.env.VITE_RESET_DB_KEY,
-            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -282,7 +262,6 @@ export const useApi = () => {
 
   return {
     loginUser,
-    // registerUser,
     getProducts,
     postProduct,
     patchProduct,
