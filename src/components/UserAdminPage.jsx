@@ -253,8 +253,8 @@ function UserAdminPage() {
               <thead>
                 <tr className="text-muted">
                   <th>#ID</th>
-                  <th>First</th>
-                  <th>Last</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
                   <th>Email</th>
                   <th>Role</th>
                   <th>Actions</th>
@@ -338,8 +338,8 @@ function UserAdminPage() {
               <thead>
                 <tr className="text-muted">
                   <th>#ID</th>
-                  <th>First</th>
-                  <th>Last</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
                   <th>Email</th>
                   <th>Role</th>
                   <th>Actions</th>
