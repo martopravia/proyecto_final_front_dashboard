@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { formatName } from "../utils/formatName";
 import { useState } from "react";
 
-export default function FormProducts({
+export default function FormProduct({
   initialValues,
   onSubmit,
   onCancel,
@@ -15,9 +15,16 @@ export default function FormProducts({
 }) {
   const isEditing = initialValues.id;
 
-  const { register, handleSubmit } = useForm({
+  const { register, setValue, handleSubmit, watch } = useForm({
     defaultValues: initialValues,
   });
+
+  const nameValue = watch("name", initialValues?.name || "");
+
+  const handleNameChange = (e) => {
+    const lower = e.target.value.toLowerCase();
+    setValue("name", lower, { shouldValidate: true });
+  };
 
   const [previewUrl, setPreviewUrl] = useState(
     typeof initialValues?.image === "string" ? initialValues.image : null
@@ -34,7 +41,10 @@ export default function FormProducts({
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Form.Group className="mb-2">
         <Form.Label>Name</Form.Label>
-        <Form.Control {...register("name", { required: true })} />
+        <Form.Control
+          value={formatName(nameValue)}
+          onChange={handleNameChange}
+        />
       </Form.Group>
 
       <Form.Group className="mb-2">

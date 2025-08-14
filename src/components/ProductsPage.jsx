@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
-import FormProducts from "./FormProducts";
+import FormProduct from "./FormProduct";
 import { useCategoryProducts } from "../hooks/useCategoryProducts";
 import { useApi } from "../hooks/useApi";
 import { formatName } from "../utils/formatName";
@@ -161,7 +161,7 @@ function ProductsPage() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <FormProducts
+          <FormProduct
             initialValues={selectedProduct}
             onCancel={handleModalClose}
             onSubmit={
