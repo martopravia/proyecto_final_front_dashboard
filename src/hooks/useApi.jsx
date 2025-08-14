@@ -13,7 +13,6 @@ import {
 } from "../redux/productsSlice";
 import {
   addCategory,
-  categoriesReceived,
   categoriesRequested,
   categoriesRequestFailed,
   deleteCategory,
