@@ -3,6 +3,7 @@ import { Modal, Button } from "react-bootstrap";
 import FormProducts from "./FormProducts";
 import { useCategoryProducts } from "../hooks/useCategoryProducts";
 import { useApi } from "../hooks/useApi";
+import { formatName } from "../utils/formatName";
 
 const emptyProduct = {
   id: "",
@@ -19,15 +20,14 @@ function ProductsPage() {
   const { products = [] } = useCategoryProducts();
   const { postProduct, patchProduct, destroyProduct } = useApi();
 
-  const [showModalAdd, setShowModalAdd] = useState(false);
-  const [showModalUpdate, setShowModalUpdate] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(emptyProduct);
 
-  const handleAddProduct = async (data) => {
+  const handleCreateProduct = async (data) => {
     try {
-      await postProduct({ ...data, image: data?.image[0] });
-      setShowModalAdd(false);
+      await postProduct({ ...data, image: data.image?.[0] });
+      setShowModal(false);
     } catch (error) {
       console.error("Error adding product:", error);
     }
@@ -35,36 +35,35 @@ function ProductsPage() {
 
   const handleUpdateProduct = async (data) => {
     try {
-      const productData = { ...data, image: data?.image[0] };
+      const productData = { ...data, image: data.image?.[0] };
       if (!data.image) {
         delete productData.image;
       }
       await patchProduct(productData);
-      setShowModalUpdate(false);
+      setShowModal(false);
     } catch (error) {
       console.error("Error updating product:", error);
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDeleteProduct = async (id) => {
     await destroyProduct(id);
   };
 
-  const handleEdit = (product) => {
+  const handleEditForm = (product) => {
     setSelectedProduct({ ...product, image: null });
-    setShowModalUpdate(true);
+    setShowModal(true);
+  };
+
+  const handleCreateForm = () => {
+    setSelectedProduct(emptyProduct);
+    setShowModal(true);
   };
 
   const handleModalClose = () => {
     setSelectedProduct(emptyProduct);
-    setShowModalUpdate(false);
-    setShowModalAdd(false);
+    setShowModal(false);
   };
-
-  function capitalizeFirstLetter(string) {
-    if (!string) return "";
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-  }
 
   const filteredProducts = products.filter((product) => {
     const search = searchTerm.trim().toLowerCase();
@@ -80,13 +79,7 @@ function ProductsPage() {
       <div className="row mt-4 d-flex gap-3">
         <div className="col-12 d-flex justify-content-between align-items-center p-0">
           <h3 className="fw-bold">Products</h3>
-          <Button
-            variant="primary"
-            onClick={() => {
-              setSelectedProduct(emptyProduct);
-              setShowModalAdd(true);
-            }}
-          >
+          <Button variant="primary" onClick={handleCreateForm}>
             Add Product
           </Button>
         </div>
@@ -116,7 +109,7 @@ function ProductsPage() {
                       style={{ objectFit: "contain", height: "200px" }}
                     />
                     <h5 className="fw-bold mb-1">
-                      {capitalizeFirstLetter(product.name)}{" "}
+                      {formatName(product.name)}{" "}
                       {product.featured && <span title="Featured">⭐</span>}
                     </h5>
                     <p className="text-muted small mb-2">
@@ -135,14 +128,14 @@ function ProductsPage() {
                         <Button
                           size="sm"
                           variant="outline-primary"
-                          onClick={() => handleEdit(product)}
+                          onClick={() => handleEditForm(product)}
                         >
                           Edit
                         </Button>
                         <Button
                           size="sm"
                           variant="outline-danger"
-                          onClick={() => handleDelete(product.id)}
+                          onClick={() => handleDeleteProduct(product.id)}
                         >
                           Delete
                         </Button>
@@ -161,29 +154,19 @@ function ProductsPage() {
         </div>
       </div>
 
-      <Modal show={showModalUpdate} onHide={handleModalClose} centered>
+      <Modal show={showModal} onHide={handleModalClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Product</Modal.Title>
+          <Modal.Title>
+            {`${selectedProduct.id ? "Edit" : "Add New"} `} Product
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <FormProducts
             initialValues={selectedProduct}
-            isEditing={true}
             onCancel={handleModalClose}
-            onSubmit={handleUpdateProduct}
-          />
-        </Modal.Body>
-      </Modal>
-
-      <Modal show={showModalAdd} onHide={handleModalClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New Product</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <FormProducts
-            initialValues={emptyProduct}
-            onCancel={handleModalClose}
-            onSubmit={handleAddProduct}
+            onSubmit={
+              selectedProduct.id ? handleUpdateProduct : handleCreateProduct
+            }
           />
         </Modal.Body>
       </Modal>

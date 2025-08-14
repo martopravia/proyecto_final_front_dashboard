@@ -7,13 +7,14 @@ export default function FormProducts({
   initialValues,
   onSubmit,
   onCancel,
-  isEditing,
   categories = [
     { id: "1", name: "sofas" },
     { id: "2", name: "tables" },
     { id: "3", name: "chair" },
   ],
 }) {
+  const isEditing = initialValues.id;
+
   const { register, handleSubmit } = useForm({
     defaultValues: initialValues,
   });
