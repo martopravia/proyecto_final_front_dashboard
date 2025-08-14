@@ -252,7 +252,7 @@ function UserAdminPage() {
             <table className="table table-borderless align-middle fs-6">
               <thead>
                 <tr className="text-muted">
-                  <th>#ID</th>
+                  <th>#Id</th>
                   <th>First Name</th>
                   <th>Last Name</th>
                   <th>Email</th>
@@ -337,7 +337,7 @@ function UserAdminPage() {
             <table className="table table-borderless align-middle fs-6">
               <thead>
                 <tr className="text-muted">
-                  <th>#ID</th>
+                  <th>#Id</th>
                   <th>First Name</th>
                   <th>Last Name</th>
                   <th>Email</th>
