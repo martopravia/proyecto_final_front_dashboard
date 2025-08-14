@@ -1,110 +1,105 @@
-import React from "react";
 import { Form, Button } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import { formatName } from "../utils/formatName";
+import { useState } from "react";
 
-const FormProducts = ({
-  onCancel,
-  setNewProduct,
-  isEditing,
-  product,
+export default function FormProducts({
+  initialValues,
   onSubmit,
-}) => {
-  const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
-    if (type === "file") {
-      setNewProduct((prev) => ({ ...prev, image: files[0] }));
-    } else {
-      setNewProduct((prev) => ({
-        ...prev,
-        [name]: type === "checkbox" ? checked : value,
-      }));
+  onCancel,
+  isEditing,
+  categories = [
+    { id: "1", name: "sofas" },
+    { id: "2", name: "tables" },
+    { id: "3", name: "chair" },
+  ],
+}) {
+  const { register, handleSubmit } = useForm({
+    defaultValues: initialValues,
+  });
+
+  const [previewUrl, setPreviewUrl] = useState(
+    typeof initialValues?.image === "string" ? initialValues.image : null
+  );
+
+  const handleImagePreview = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
+
   return (
-    <Form onSubmit={onSubmit}>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <Form.Group className="mb-2">
         <Form.Label>Name</Form.Label>
-        <Form.Control
-          name="name"
-          value={product.name}
-          onChange={handleChange}
-          required
-        />
+        <Form.Control {...register("name", { required: true })} />
       </Form.Group>
+
       <Form.Group className="mb-2">
         <Form.Label>Description</Form.Label>
         <Form.Control
-          name="description"
-          value={product.description}
-          onChange={handleChange}
           as="textarea"
           rows={2}
-          required
+          {...register("description", { required: true })}
         />
       </Form.Group>
+
       <Form.Group className="mb-2">
         <Form.Label>Price</Form.Label>
         <Form.Control
-          name="price"
           type="number"
           step="0.01"
-          value={product.price}
-          onChange={handleChange}
-          required
+          {...register("price", { required: true, valueAsNumber: true })}
         />
       </Form.Group>
+
       <Form.Group className="mb-2">
         <Form.Label>Stock</Form.Label>
         <Form.Control
-          name="stock"
           type="number"
-          value={product.stock}
-          onChange={handleChange}
-          required
+          {...register("stock", { required: true, valueAsNumber: true })}
         />
       </Form.Group>
+
       <Form.Group className="mb-2">
         <Form.Label>Category</Form.Label>
-        <Form.Select
-          name="category"
-          value={product.category.name}
-          onChange={handleChange}
-          required
-        >
+        <Form.Select {...register("categoryId", { required: true })}>
           <option value="">Select category</option>
-          <option value="chairs">Chairs</option>
-          <option value="tables">Tables</option>
-          <option value="sofas">Sofas</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {formatName(category.name)}
+            </option>
+          ))}
         </Form.Select>
       </Form.Group>
+
       <Form.Group className="mb-3">
         <Form.Label>Upload Image</Form.Label>
         <Form.Control
           type="file"
-          name="image"
           accept="image/*"
-          onChange={handleChange}
-          required={!isEditing}
+          {...register("image", { required: !isEditing })}
+          onChange={(e) => {
+            handleImagePreview(e);
+          }}
         />
-        {product.image && (
+        {previewUrl && (
           <img
-            src={
-              product.image instanceof File
-                ? URL.createObjectURL(product.image)
-                : product.image
-            }
+            src={previewUrl}
             alt="Preview"
             style={{ maxWidth: "100%", marginTop: "10px" }}
           />
         )}
       </Form.Group>
+
       <Form.Check
-        name="featured"
         type="checkbox"
         label="Featured"
-        checked={product.featured}
-        onChange={handleChange}
+        {...register("featured")}
         className="mb-3"
       />
+
       <div className="text-end">
         <Button variant="secondary" onClick={onCancel} className="me-2">
           Cancel
@@ -115,6 +110,4 @@ const FormProducts = ({
       </div>
     </Form>
   );
-};
-
-export default FormProducts;
+}

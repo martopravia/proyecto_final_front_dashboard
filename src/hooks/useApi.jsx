@@ -159,12 +159,12 @@ export const useApi = () => {
 
   const destroyProduct = async (id) => {
     try {
+      dispatch(deleteProduct(id));
       const response = await api.delete(`/products/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      dispatch(deleteProduct(id));
       return response.data;
     } catch (error) {
       console.error("Error:", error);

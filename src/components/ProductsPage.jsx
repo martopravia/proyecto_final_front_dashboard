@@ -4,6 +4,17 @@ import FormProducts from "./FormProducts";
 import { useCategoryProducts } from "../hooks/useCategoryProducts";
 import { useApi } from "../hooks/useApi";
 
+const emptyProduct = {
+  id: "",
+  name: "",
+  description: "",
+  price: "",
+  stock: "",
+  featured: false,
+  categoryId: "",
+  image: null,
+};
+
 function ProductsPage() {
   const { products = [] } = useCategoryProducts();
   const { postProduct, patchProduct, destroyProduct } = useApi();
@@ -11,51 +22,24 @@ function ProductsPage() {
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showModalUpdate, setShowModalUpdate] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState(emptyProduct);
 
-  const [newProduct, setNewProduct] = useState({
-    id: "",
-    name: "",
-    description: "",
-    price: "",
-    stock: "",
-    featured: false,
-    category: "",
-    image: null,
-  });
-
-  const resetModal = () => {
-    setNewProduct({
-      id: "",
-      name: "",
-      description: "",
-      price: "",
-      stock: "",
-      featured: false,
-      category: "",
-      image: null,
-    });
-  };
-
-  const handleAddProduct = async (e) => {
-    e.preventDefault();
+  const handleAddProduct = async (data) => {
     try {
-      await postProduct(newProduct);
-      resetModal();
+      await postProduct({ ...data, image: data?.image[0] });
       setShowModalAdd(false);
     } catch (error) {
       console.error("Error adding product:", error);
     }
   };
 
-  const handleUpdateProduct = async (e) => {
-    e.preventDefault();
+  const handleUpdateProduct = async (data) => {
     try {
-      const productData = { ...newProduct };
-      if (!newProduct.image) {
+      const productData = { ...data, image: data?.image[0] };
+      if (!data.image) {
         delete productData.image;
       }
       await patchProduct(productData);
-      resetModal();
       setShowModalUpdate(false);
     } catch (error) {
       console.error("Error updating product:", error);
@@ -67,21 +51,12 @@ function ProductsPage() {
   };
 
   const handleEdit = (product) => {
-    setNewProduct({
-      id: product.id,
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      stock: product.stock,
-      featured: product.featured,
-      image: null,
-      category: product.category,
-    });
+    setSelectedProduct({ ...product, image: null });
     setShowModalUpdate(true);
   };
 
   const handleModalClose = () => {
-    resetModal();
+    setSelectedProduct(emptyProduct);
     setShowModalUpdate(false);
     setShowModalAdd(false);
   };
@@ -108,7 +83,7 @@ function ProductsPage() {
           <Button
             variant="primary"
             onClick={() => {
-              resetModal();
+              setSelectedProduct(emptyProduct);
               setShowModalAdd(true);
             }}
           >
@@ -178,7 +153,6 @@ function ProductsPage() {
               ))
             ) : (
               <p className="text-center text-muted mb-4">
-                {" "}
                 The product you’re looking for doesn’t exist or may be
                 unavailable
               </p>
@@ -193,8 +167,7 @@ function ProductsPage() {
         </Modal.Header>
         <Modal.Body>
           <FormProducts
-            setNewProduct={setNewProduct}
-            product={newProduct}
+            initialValues={selectedProduct}
             isEditing={true}
             onCancel={handleModalClose}
             onSubmit={handleUpdateProduct}
@@ -208,9 +181,8 @@ function ProductsPage() {
         </Modal.Header>
         <Modal.Body>
           <FormProducts
-            setNewProduct={setNewProduct}
+            initialValues={emptyProduct}
             onCancel={handleModalClose}
-            product={newProduct}
             onSubmit={handleAddProduct}
           />
         </Modal.Body>
