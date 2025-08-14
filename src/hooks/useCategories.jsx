@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useApi } from "./useApi";
-import { categoriesReceived } from "../redux/categorySlice";
+import { categoriesReceived } from "../redux/categoriesSlice";
 
 const STALE_TIME = import.meta.env.VITE_STALE_TIME_SEC * 1000;
 

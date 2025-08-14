@@ -1,91 +1,43 @@
-import React, { useEffect, useState } from "react";
-import { Link, useSearchParams, useNavigate } from "react-router";
-import axios from "axios";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { setOrders } from "../redux/orderSlice";
+import { useEffect, useState } from "react";
+import { useSearchParams, useNavigate } from "react-router";
 import { toast } from "react-toastify";
+import { useOrders } from "../hooks/useOrders";
+import OrderStatus from "./OrderStatus";
+import Avatar from "./Avatar";
+import { useApi } from "../hooks/useApi";
 
 function OrdersPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const token = useSelector((state) => state.user.token);
-  const orders = useSelector((state) => state.order.orders);
-  const dispatch = useDispatch();
 
-  const [selectedOrderId, setSelectedOrderId] = useState(null);
-  const [newStatus, setNewStatus] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/orders`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        dispatch(setOrders(response.data));
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      }
-    };
-
-    if (token) {
-      fetchOrders();
-    } else {
-      console.warn("No token available, user not authenticated.");
-    }
-  }, [token]);
-
-  const orderId = searchParams.get("order");
-  const selectedOrder = orders.find((order) => order.id.toString() === orderId);
+  const { orders } = useOrders();
+  const { patchOrder } = useApi();
 
   useEffect(() => {
-    if (selectedOrder) {
-      setNewStatus(selectedOrder.status);
+    const orderId = searchParams.get("order");
+    if (orderId) {
+      setSelectedOrder(orders.find((order) => order.id == orderId));
     }
-  }, [selectedOrder]);
+  }, []);
 
-  const getStatusStyle = (status) => {
-    const base = "px-3 py-1 rounded-full text-sm font-medium";
-    switch (status) {
-      case "completed":
-        return `${base} bg-success bg-opacity-25 text-success`;
-      case "pending":
-        return `${base} bg-warning bg-opacity-25 text-warning`;
-      case "cancelled":
-        return `${base} bg-danger bg-opacity-25 text-danger`;
-      default:
-        return `${base} bg-secondary bg-opacity-25 text-secondary`;
-    }
+  const handleUpdateStatus = (status) => {
+    setSelectedOrder((prev) => ({ ...prev, status }));
   };
 
-  const handleStatusChange = async (orderId, status) => {
-    try {
-      const response = await axios.patch(
-        `${import.meta.env.VITE_API_URL}/orders/${orderId}`,
-        { status },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const updatedOrders = orders.map((order) =>
-        order.id === orderId ? { ...order, status } : order
-      );
-
-      dispatch(setOrders(updatedOrders));
-
-      toast.success("Order status updated successfully");
-    } catch (error) {
-      console.error("Error updating order status:", error);
-      toast.error("Failed to update order status");
-    }
+  const handleSaveStatus = async () => {
+    await toast.promise(
+      patchOrder(selectedOrder),
+      {
+        pending: "Updating order status...",
+        success: "Order status updated successfully",
+        error: "Failed to update order status",
+      },
+      {
+        closeOnClick: false,
+      }
+    );
   };
 
   return (
@@ -106,46 +58,32 @@ function OrdersPage() {
                 </tr>
               </thead>
               <tbody>
-                {[...orders]
-                  .sort((a, b) => b.id - a.id)
-
-                  .map((order, index) => (
-                    <tr
-                      key={order.id}
-                      style={{ cursor: "pointer" }}
-                      className={
-                        selectedOrderId === order.id ? "table-active" : ""
-                      }
-                      onClick={() => {
-                        setSelectedOrderId(order.id);
-                        navigate(`/admin/orders?order=${order.id}`);
-                      }}
-                    >
-                      <td>#{order.id}</td>
-                      <td className="d-flex align-items-center ">
-                        <img
-                          src={`https://picsum.photos/seed/customer${index}/40/40`}
-                          alt="avatar"
-                          className="rounded-circle me-2"
-                          style={{
-                            width: "30px",
-                            height: "30px",
-                            objectFit: "cover",
-                          }}
-                        />
-                        {order.user?.firstname || "No firstname registered"}{" "}
-                        {order.user?.lastname || "No lastname registered"}
-                      </td>
-                      <td>
-                        <span className={getStatusStyle(order.status)}>
-                          {order.status}
-                        </span>
-                      </td>
-                      <td>
-                        U$S {Number(order.totalAmount).toLocaleString("de-DE")}
-                      </td>
-                    </tr>
-                  ))}
+                {orders.map((order) => (
+                  <tr
+                    key={order.id}
+                    style={{ cursor: "pointer" }}
+                    className={
+                      selectedOrder?.id === order.id ? "table-active" : ""
+                    }
+                    onClick={() => {
+                      setSelectedOrder(order);
+                      navigate(`/admin/orders?order=${order.id}`);
+                    }}
+                  >
+                    <td>#{order.id}</td>
+                    <td className="d-flex align-items-center ">
+                      <Avatar user={order.user} />
+                      {order.user?.firstname || "No firstname registered"}{" "}
+                      {order.user?.lastname || "No lastname registered"}
+                    </td>
+                    <td>
+                      <OrderStatus status={order.status} />
+                    </td>
+                    <td>
+                      U$S {Number(order.totalAmount).toLocaleString("de-DE")}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -162,19 +100,12 @@ function OrdersPage() {
                 <strong>Customer:</strong> {selectedOrder.user?.firstname}{" "}
                 {selectedOrder.user?.lastname} ({selectedOrder.user?.email})
               </div>
-              {/* 
-              <div className="mb-2">
-                <strong>Status:</strong>{" "}
-                <span className={getStatusStyle(selectedOrder.status)}>
-                  {selectedOrder.status}
-                </span>
-              </div> */}
               <div className="mb-3">
                 <strong>Change Status:</strong>
                 <select
                   className="form-select"
-                  value={newStatus}
-                  onChange={(e) => setNewStatus(e.target.value)}
+                  value={selectedOrder.status}
+                  onChange={(e) => handleUpdateStatus(e.target.value)}
                 >
                   <option value="pending">Pending</option>
                   <option value="completed">Completed</option>
@@ -182,9 +113,7 @@ function OrdersPage() {
                 </select>
                 <button
                   className="btn btn-primary mt-2"
-                  onClick={() =>
-                    handleStatusChange(selectedOrder.id, newStatus)
-                  }
+                  onClick={() => handleSaveStatus()}
                 >
                   Save Status
                 </button>

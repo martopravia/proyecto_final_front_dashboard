@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const categorySlice = createSlice({
+const categoriesSlice = createSlice({
   name: "categories",
   initialState: {
     items: [],
@@ -48,5 +48,5 @@ export const {
   addCategory,
   updateCategory,
   deleteCategory,
-} = categorySlice.actions;
-export default categorySlice.reducer;
+} = categoriesSlice.actions;
+export default categoriesSlice.reducer;

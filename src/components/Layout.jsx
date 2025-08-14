@@ -3,11 +3,8 @@ import { Outlet } from "react-router";
 
 function Layout() {
   return (
-    <div
-      className="d-flex"
-      style={{ minHeight: "100vh", alignItems: "stretch", flexGrow: 1 }}
-    >
-      <div style={{ width: "280px" }}>
+    <div className="d-flex" style={{ minHeight: "100vh" }}>
+      <div style={{ minWidth: "210px" }}>
         <SideBar />
       </div>
       {/* <div className="flex-grow-1 p-3"> */}

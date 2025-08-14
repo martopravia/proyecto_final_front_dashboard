@@ -10,7 +10,7 @@ import {
   editProduct,
   productsRequested,
   productsRequestFailed,
-} from "../redux/productSlice";
+} from "../redux/productsSlice";
 import {
   addCategory,
   categoriesReceived,
@@ -18,7 +18,12 @@ import {
   categoriesRequestFailed,
   deleteCategory,
   updateCategory,
-} from "../redux/categorySlice";
+} from "../redux/categoriesSlice";
+import {
+  ordersRequested,
+  ordersRequestFailed,
+  updateOrder,
+} from "../redux/ordersSlice";
 
 export const useApi = () => {
   const dispatch = useDispatch();
@@ -175,7 +180,6 @@ export const useApi = () => {
     dispatch(categoriesRequested());
     try {
       const response = await api.get("/categories", { params });
-      dispatch(categoriesReceived(response.data));
       return response.data;
     } catch (error) {
       dispatch(categoriesRequestFailed(error.message));
@@ -227,6 +231,37 @@ export const useApi = () => {
     }
   };
 
+  const getOrders = async (params) => {
+    dispatch(ordersRequested());
+    try {
+      const response = await api.get("/orders", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params,
+      });
+      return response.data;
+    } catch (error) {
+      dispatch(ordersRequestFailed(error.message));
+      console.error("Error:", error);
+    }
+  };
+
+  const patchOrder = async (order) => {
+    try {
+      const response = await api.patch(`/orders/${order.id}`, order, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(updateOrder(response.data));
+      return response.data;
+    } catch (error) {
+      console.error("Error:", error);
+      throw error;
+    }
+  };
+
   const resetDatabase = async () => {
     try {
       const response = await api.post(
@@ -261,6 +296,8 @@ export const useApi = () => {
     postCategory,
     patchCategory,
     destroyCategory,
+    getOrders,
+    patchOrder,
     resetDatabase,
   };
 };

@@ -2,6 +2,10 @@ html {
   overflow-y: scroll;
 }
 
+body {
+  font-family: "Montserrat", sans-serif;
+}
+
 #root {
   height: 100%;
   margin: 0;
@@ -27,4 +31,36 @@ html {
   justify-content: center;
   color: #555;
   font-size: 16px;
+}
+
+.corner-ribbon {
+  width: 150px;
+  background: #d85663;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  padding: 3px 0;
+  position: absolute;
+  top: 20px;
+  left: -40px;
+  transform: rotate(-45deg);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  font-size: 0.8rem;
+}
+
+.avatar-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  min-width: 30px;
+  min-height: 30px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: white;
+  background-color: #888888;
+}
+
+.clickable {
+  cursor: pointer;
 }

@@ -1,8 +1,8 @@
 import { toast } from "react-toastify";
 import { useApi } from "../hooks/useApi";
 import { Button } from "react-bootstrap";
-import { resetProductsLastFetched } from "../redux/productSlice";
-import { resetCategoriesLastFetched } from "../redux/categorySlice";
+import { resetProductsLastFetched } from "../redux/productsSlice";
+import { resetCategoriesLastFetched } from "../redux/categoriesSlice";
 import { useDispatch } from "react-redux";
 
 export default function ResetDatabaseButton({ className, children }) {

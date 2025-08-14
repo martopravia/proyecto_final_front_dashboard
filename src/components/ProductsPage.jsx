@@ -98,7 +98,10 @@ export default function ProductsPage() {
             {filteredProducts.length ? (
               filteredProducts.map((product) => (
                 <div className="col-md-4 mb-4" key={product.id}>
-                  <div className="border rounded shadow-sm p-3 h-100 d-flex flex-column">
+                  <div className="border rounded shadow-sm p-3 h-100 d-flex flex-column position-relative overflow-hidden">
+                    {product.featured && (
+                      <div className="corner-ribbon">FEATURED</div>
+                    )}
                     {product.image ? (
                       <img
                         src={product.image}
@@ -109,21 +112,28 @@ export default function ProductsPage() {
                     ) : (
                       <div className="no-image rounded mb-3">No Image</div>
                     )}
-                    <h5 className="fw-bold mb-1">
-                      {formatName(product.name)}{" "}
-                      {product.featured && <span title="Featured">⭐</span>}
-                    </h5>
+                    <h4 className="fw-bold mb-1">{formatName(product.name)}</h4>
                     <p className="text-muted small mb-2">
                       {product.description}
                     </p>
                     <div className="mt-auto">
-                      <div className="mb-2">
-                        <strong>Price:</strong> U$S{" "}
-                        {Number(product.price).toLocaleString("de-DE")} <br />
-                        <strong>Stock:</strong> {product.stock}
-                        <br />
-                        <strong>Category:</strong>{" "}
-                        {product.category?.name || "Uncategorized"}
+                      <div className="mb-3">
+                        <div className="d-flex justify-content-between">
+                          <span className="fw-bold">Price:</span>
+                          <span className="fs-5">
+                            U$S {Number(product.price).toLocaleString("de-DE")}
+                          </span>
+                        </div>
+                        <div className="d-flex justify-content-between">
+                          <span className="fw-bold">Stock:</span>
+                          <span className="fs-5">{product.stock}</span>
+                        </div>
+                        <div className="d-flex justify-content-between">
+                          <span className="fw-bold">Category:</span>
+                          <span className="fs-5">
+                            {product.category?.name || "Uncategorized"}
+                          </span>
+                        </div>
                       </div>
                       <div className="d-flex justify-content-between">
                         <Button
