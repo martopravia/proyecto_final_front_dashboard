@@ -16,7 +16,7 @@ const emptyProduct = {
   image: null,
 };
 
-function ProductsPage() {
+export default function ProductsPage() {
   const { products = [] } = useCategoryProducts();
   const { postProduct, patchProduct, destroyProduct } = useApi();
 
@@ -99,15 +99,16 @@ function ProductsPage() {
               filteredProducts.map((product) => (
                 <div className="col-md-4 mb-4" key={product.id}>
                   <div className="border rounded shadow-sm p-3 h-100 d-flex flex-column">
-                    <img
-                      src={
-                        product.image ||
-                        "https://via.placeholder.com/300x200?text=No+Image"
-                      }
-                      alt={product.name}
-                      className="img-fluid rounded mb-3"
-                      style={{ objectFit: "contain", height: "200px" }}
-                    />
+                    {product.image ? (
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="img-fluid rounded mb-3"
+                        style={{ objectFit: "contain", height: "200px" }}
+                      />
+                    ) : (
+                      <div className="no-image rounded mb-3">No Image</div>
+                    )}
                     <h5 className="fw-bold mb-1">
                       {formatName(product.name)}{" "}
                       {product.featured && <span title="Featured">⭐</span>}
@@ -173,5 +174,3 @@ function ProductsPage() {
     </div>
   );
 }
-
-export default ProductsPage;

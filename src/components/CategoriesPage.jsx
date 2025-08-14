@@ -1,52 +1,64 @@
 import { useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 import { useApi } from "../hooks/useApi";
 import { useCategories } from "../hooks/useCategories";
+import FormCategory from "./FormCategory";
+import { formatName } from "../utils/formatName";
 
-function CategoriesPage() {
-  const [showModal, setShowModal] = useState(false);
-  const [editingCategoryId, setEditingCategoryId] = useState(null);
-  const [categoryName, setCategoryName] = useState("");
+const emptyCategory = {
+  id: "",
+  name: "",
+  alias: "",
+  description: "",
+  image: null,
+};
 
-  const { postCategory, patchCategory, destroyCategory } = useApi();
+export default function CategoriesPage() {
   const { categories } = useCategories();
+  const { postCategory, patchCategory, destroyCategory } = useApi();
 
-  const handleOpenAddModal = () => {
-    setEditingCategoryId(null);
-    setCategoryName("");
-    setShowModal(true);
-  };
+  const [showModal, setShowModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(emptyCategory);
 
-  const handleOpenEditModal = (category) => {
-    setEditingCategoryId(category.id);
-    setCategoryName(category.name);
-    setShowModal(true);
-  };
-
-  const handleDelete = async (id) => {
+  const handleCreateCategory = async (data) => {
     try {
-      destroyCategory(id);
-    } catch (error) {
-      console.error("Error deleting category:", error);
-    }
-  };
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-    if (!categoryName.trim()) return;
-
-    try {
-      if (editingCategoryId) {
-        patchCategory({ id: editingCategoryId, name: categoryName });
-      } else {
-        postCategory({ name: categoryName });
-      }
+      await postCategory({ ...data, image: data.image?.[0] });
       setShowModal(false);
-      setCategoryName("");
-      setEditingCategoryId(null);
     } catch (error) {
-      console.error("Error saving category:", error);
+      console.error("Error adding category:", error);
     }
+  };
+
+  const handleUpdateCategory = async (data) => {
+    try {
+      const categoryData = { ...data, image: data.image?.[0] };
+      if (!data.image) {
+        delete categoryData.image;
+      }
+      await patchCategory(categoryData);
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error updating category:", error);
+    }
+  };
+
+  const handleDeleteCategory = async (id) => {
+    await destroyCategory(id);
+  };
+
+  const handleEditForm = (category) => {
+    setSelectedCategory({ ...category, image: null });
+    setShowModal(true);
+  };
+
+  const handleCreateForm = () => {
+    setSelectedCategory(emptyCategory);
+    setShowModal(true);
+  };
+
+  const handleModalClose = () => {
+    setSelectedCategory(emptyCategory);
+    setShowModal(false);
   };
 
   return (
@@ -54,32 +66,47 @@ function CategoriesPage() {
       <div className="row mt-4 d-flex gap-3">
         <div className="col-12 d-flex justify-content-between align-items-center p-0">
           <h3 className="fw-bold">Categories</h3>
-          <Button variant="primary" onClick={handleOpenAddModal}>
+          <Button variant="primary" onClick={handleCreateForm}>
             Add Category
           </Button>
         </div>
         <div className="col border rounded shadow p-4 bg-white">
           <div className="row">
             {categories.map((category) => (
-              <div className="col-md-6 mb-3" key={category.id}>
-                <div className="border rounded shadow-sm p-3 bg-white d-flex justify-content-between align-items-center">
-                  <span className="fw-semibold fs-5">{category.name}</span>
-                  <div>
-                    <Button
-                      size="sm"
-                      variant="outline-primary"
-                      className="me-2"
-                      onClick={() => handleOpenEditModal(category)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline-danger"
-                      onClick={() => handleDelete(category.id)}
-                    >
-                      Delete
-                    </Button>
+              <div className="col-md-4 mb-4" key={category.id}>
+                <div className="border rounded shadow-sm p-3 h-100 d-flex flex-column">
+                  {category.image ? (
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="img-fluid rounded mb-3"
+                      style={{ objectFit: "contain", height: "200px" }}
+                    />
+                  ) : (
+                    <div className="no-image rounded mb-3">No Image</div>
+                  )}
+                  <h6 className="mb-1">{formatName(category.name)}</h6>
+                  <h5 className="fw-bold mb-1">{category.alias}</h5>
+                  <p className="text-muted small mb-3">
+                    {category.description}
+                  </p>
+                  <div className="mt-auto">
+                    <div className="d-flex justify-content-between">
+                      <Button
+                        size="sm"
+                        variant="outline-primary"
+                        onClick={() => handleEditForm(category)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline-danger"
+                        onClick={() => handleDeleteCategory(category.id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -88,36 +115,22 @@ function CategoriesPage() {
         </div>
       </div>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+      <Modal show={showModal} onHide={handleModalClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>
-            {editingCategoryId ? "Edit Category" : "Add Category"}
+            {`${selectedCategory.id ? "Edit" : "Add New"} `} Category
           </Modal.Title>
         </Modal.Header>
-        <Form onSubmit={handleSave}>
-          <Modal.Body>
-            <Form.Group>
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                value={categoryName}
-                onChange={(e) => setCategoryName(e.target.value)}
-                required
-              />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              Cancel
-            </Button>
-            <Button variant="primary" type="submit">
-              {editingCategoryId ? "Save Changes" : "Add Category"}
-            </Button>
-          </Modal.Footer>
-        </Form>
+        <Modal.Body>
+          <FormCategory
+            initialValues={selectedCategory}
+            onCancel={handleModalClose}
+            onSubmit={
+              selectedCategory.id ? handleUpdateCategory : handleCreateCategory
+            }
+          />
+        </Modal.Body>
       </Modal>
     </div>
   );
 }
-
-export default CategoriesPage;
