@@ -64,3 +64,38 @@ body {
 .clickable {
   cursor: pointer;
 }
+
+.btn-outline-mycolor {
+  color: #172337 !important;
+  border-color: #172337 !important;
+  background-color: transparent !important;
+}
+
+.btn-outline-mycolor:active {
+  color: #fff !important;
+  background-color: #0a101c !important;
+  border-color: #080d18 !important;
+}
+
+.btn-mycolor,
+.btn-outline-mycolor:hover {
+  background-color: #172337 !important;
+  border-color: #172337 !important;
+  color: #fff !important;
+}
+
+.btn-mycolor:hover {
+  background-color: #0f1825 !important;
+  border-color: #0d1420 !important;
+}
+
+.btn-mycolor:active {
+  background-color: #0a101c !important;
+  border-color: #080d18 !important;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #12669e;
+}

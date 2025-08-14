@@ -66,7 +66,7 @@ export default function CategoriesPage() {
       <div className="row mt-4 d-flex gap-3">
         <div className="col-12 d-flex justify-content-between align-items-center p-0">
           <h3 className="fw-bold">Categories</h3>
-          <Button variant="primary" onClick={handleCreateForm}>
+          <Button className="btn-mycolor" onClick={handleCreateForm}>
             Add Category
           </Button>
         </div>
@@ -94,7 +94,7 @@ export default function CategoriesPage() {
                     <div className="d-flex justify-content-between">
                       <Button
                         size="sm"
-                        variant="outline-primary"
+                        className="btn-outline-mycolor"
                         onClick={() => handleEditForm(category)}
                       >
                         Edit

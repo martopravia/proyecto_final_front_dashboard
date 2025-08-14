@@ -112,10 +112,10 @@ export default function FormProduct({
       />
 
       <div className="text-end">
-        <Button variant="secondary" onClick={onCancel} className="me-2">
+        <Button variant="outline-secondary" onClick={onCancel} className="me-2">
           Cancel
         </Button>
-        <Button variant="primary" type="submit">
+        <Button className="btn-mycolor" type="submit">
           {isEditing ? "Save Changes" : "Add Product"}
         </Button>
       </div>

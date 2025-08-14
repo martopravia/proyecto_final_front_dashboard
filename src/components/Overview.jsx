@@ -2,27 +2,23 @@ import { useNavigate } from "react-router";
 import { useOrders } from "../hooks/useOrders";
 import Avatar from "./Avatar";
 import OrderStatus from "./OrderStatus";
+import { useCategoryProducts } from "../hooks/useCategoryProducts";
+import { useMemo } from "react";
 
 function Overview() {
   const { orders } = useOrders();
+  const { products } = useCategoryProducts();
+
   const navigate = useNavigate();
 
-  const topSelling = [
-    {
-      name: "Nordic Chair",
-      sold: 12,
-    },
-    {
-      name: "Cedar Table",
-
-      sold: 9,
-    },
-    {
-      name: "Pine Bookshelf",
-
-      sold: 7,
-    },
-  ];
+  const topSelling = useMemo(() => {
+    return products
+      .filter((product) => ["15", "25", "35"].includes(product.id.toString()))
+      .map((product, index) => ({
+        ...product,
+        sold: (index + 1) * 4 + 3 * index,
+      }));
+  }, [products]);
 
   return (
     <div className="mt-4 mx-4" style={{ width: "100%" }}>
@@ -39,12 +35,10 @@ function Overview() {
         <div className="col border rounded shadow p-4 bg-white">
           <h5 className="fw-bold mb-4 fs-4">Top Selling</h5>
           <div className="d-flex flex-column gap-4">
-            {topSelling.map((item, index) => (
-              <div key={index} className="d-flex align-items-center">
+            {topSelling.map((item) => (
+              <div key={item.id} className="d-flex align-items-center">
                 <img
-                  src={`https://picsum.photos/seed/customer${
-                    index * 2 - 1
-                  }/40/40`}
+                  src={item.image}
                   alt={item.name}
                   className="rounded-circle me-3"
                   style={{

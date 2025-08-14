@@ -5,7 +5,9 @@ import { productsReceived } from "../redux/productsSlice";
 
 const STALE_TIME = import.meta.env.VITE_STALE_TIME_SEC * 1000;
 
-export const useCategoryProducts = ({ category } = {}) => {
+export const useCategoryProducts = (
+  { category, params } = { params: { limit: 50 } }
+) => {
   const { getProducts } = useApi();
   const dispatch = useDispatch();
 
@@ -20,9 +22,7 @@ export const useCategoryProducts = ({ category } = {}) => {
     const isStale = Date.now() - lastFetched > STALE_TIME;
 
     if (!loading && (!items.length || isStale)) {
-      getProducts({ limit: 50 }).then(
-        (res) => res && dispatch(productsReceived(res))
-      );
+      getProducts(params).then((res) => res && dispatch(productsReceived(res)));
     }
   }, [loading, items.length, lastFetched, dispatch]);
 

@@ -241,7 +241,7 @@ function UserAdminPage() {
             </select>
           </div>
 
-          <button className="btn btn-primary" onClick={handleAddUser}>
+          <button className="btn btn-mycolor" onClick={handleAddUser}>
             Add
           </button>
         </div>

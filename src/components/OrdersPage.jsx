@@ -112,7 +112,7 @@ function OrdersPage() {
                   <option value="cancelled">Cancelled</option>
                 </select>
                 <button
-                  className="btn btn-primary mt-2"
+                  className="btn btn-mycolor mt-2"
                   onClick={() => handleSaveStatus()}
                 >
                   Save Status
