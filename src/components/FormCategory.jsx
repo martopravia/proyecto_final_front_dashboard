@@ -78,7 +78,7 @@ export default function FormCategory({ initialValues, onSubmit, onCancel }) {
           Cancel
         </Button>
         <Button className="btn-mycolor" type="submit">
-          {isEditing ? "Save Changes" : "Add Product"}
+          {isEditing ? "Save Changes" : "Add Category"}
         </Button>
       </div>
     </Form>

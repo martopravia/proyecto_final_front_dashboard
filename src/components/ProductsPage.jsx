@@ -14,10 +14,11 @@ const emptyProduct = {
   featured: false,
   categoryId: "",
   image: null,
+  category: {},
 };
 
 export default function ProductsPage() {
-  const { products = [] } = useCategoryProducts();
+  const { products } = useCategoryProducts();
   const sortedProducts = [...products].sort((a, b) => {
     return new Date(b.createdAt) - new Date(a.createdAt);
   });

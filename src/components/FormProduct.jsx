@@ -2,17 +2,10 @@ import { Form, Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { formatName } from "../utils/formatName";
 import { useEffect, useState } from "react";
+import { useCategories } from "../hooks/useCategories";
 
-export default function FormProduct({
-  initialValues,
-  onSubmit,
-  onCancel,
-  categories = [
-    { id: "1", name: "sofas" },
-    { id: "2", name: "tables" },
-    { id: "3", name: "chair" },
-  ],
-}) {
+export default function FormProduct({ initialValues, onSubmit, onCancel }) {
+  const { categories } = useCategories();
   const isEditing = initialValues.id;
 
   const { register, setValue, handleSubmit, watch } = useForm({
