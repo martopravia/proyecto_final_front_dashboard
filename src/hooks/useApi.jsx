@@ -135,7 +135,7 @@ export const useApi = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      dispatch(editProduct(response.data));
+      dispatch(editProduct({ ...response.data, category: product.category }));
       return response.data;
     } catch (error) {
       console.error("Error:", error);
@@ -154,7 +154,7 @@ export const useApi = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      dispatch(addProduct(response.data));
+      dispatch(addProduct({ ...response.data, category: product.category }));
       return response.data;
     } catch (error) {
       console.error("Error:", error);

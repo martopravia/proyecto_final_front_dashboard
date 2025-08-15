@@ -1,7 +1,7 @@
 import { Form, Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { formatName } from "../utils/formatName";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function FormProduct({
   initialValues,
@@ -20,6 +20,12 @@ export default function FormProduct({
   });
 
   const nameValue = watch("name", initialValues?.name || "");
+  const categoryIdValue = watch("categoryId", initialValues?.categoryId || "");
+
+  useEffect(() => {
+    const foundCategory = categories.find((cat) => cat.id == categoryIdValue);
+    setValue("category", foundCategory);
+  }, [categoryIdValue]);
 
   const handleNameChange = (e) => {
     const lower = e.target.value.toLowerCase();
