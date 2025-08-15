@@ -18,8 +18,11 @@ const emptyProduct = {
 
 export default function ProductsPage() {
   const { products = [] } = useCategoryProducts();
-  const { postProduct, patchProduct, destroyProduct } = useApi();
+  const sortedProducts = [...products].sort((a, b) => {
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
 
+  const { postProduct, patchProduct, destroyProduct } = useApi();
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(emptyProduct);
@@ -65,7 +68,7 @@ export default function ProductsPage() {
     setShowModal(false);
   };
 
-  const filteredProducts = products.filter((product) => {
+  const filteredProducts = sortedProducts.filter((product) => {
     const search = searchTerm.trim().toLowerCase();
     const nameMatch = product.name?.toLowerCase().includes(search);
     const categoryMatch = product.category?.name

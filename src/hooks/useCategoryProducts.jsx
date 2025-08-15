@@ -6,7 +6,7 @@ import { productsReceived } from "../redux/productsSlice";
 const STALE_TIME = import.meta.env.VITE_STALE_TIME_SEC * 1000;
 
 export const useCategoryProducts = (
-  { category, params } = { params: { limit: 50 } }
+  { category, params } = { params: { limit: 250 } }
 ) => {
   const { getProducts } = useApi();
   const dispatch = useDispatch();
