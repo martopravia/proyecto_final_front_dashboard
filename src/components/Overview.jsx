@@ -4,6 +4,7 @@ import Avatar from "./Avatar";
 import OrderStatus from "./OrderStatus";
 import { useCategoryProducts } from "../hooks/useCategoryProducts";
 import { useMemo } from "react";
+import { formatName } from "../utils/formatName";
 
 function Overview() {
   const { orders } = useOrders();
@@ -48,7 +49,9 @@ function Overview() {
                   }}
                 />
                 <div className="flex-grow-1">
-                  <div className="fw-semibold fs-5">{item.name}</div>
+                  <div className="fw-semibold fs-5">
+                    {formatName(item.name)}
+                  </div>
                   <div className="text-muted fs-6">{item.sold} units sold</div>
                 </div>
               </div>
