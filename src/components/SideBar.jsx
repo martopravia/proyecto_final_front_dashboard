@@ -32,7 +32,7 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            📊 Overview
+            <i className="bi bi-kanban"></i> Overview
           </NavLink>
         </li>
         <hr />
@@ -44,7 +44,7 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            📦 Orders
+            <i className="bi bi-box-seam-fill"></i> Orders
           </NavLink>
         </li>
         <hr />
@@ -56,7 +56,7 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            🛋️ Products
+            <i className="bi bi-lamp-fill"></i> Products
           </NavLink>
         </li>
         <hr />
@@ -68,7 +68,7 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            🎡 Categories
+            <i className="bi bi-flower3"></i> Categories
           </NavLink>
         </li>
         <hr />
@@ -80,12 +80,12 @@ function SideBar() {
               isActive ? "nav-link active" : "nav-link"
             }
           >
-            📈 Admin Panel
+            <i className="bi bi-clipboard2-check"></i> Admin Panel
           </NavLink>
         </li>
       </ul>
       <ResetDatabaseButton className="btn btn-danger">
-        ⚙️ Reset Database
+        <i className="bi bi-gear-fill"></i> Reset Database
       </ResetDatabaseButton>
       <hr />
       <button className="btn btn-outline-light mt-3" onClick={handleLogout}>
