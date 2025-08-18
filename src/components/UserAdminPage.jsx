@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUsers } from "../redux/userListSlice";
 
 function UserAdminPage() {
-  const { registerUser, fetchUsers, updateUserRoles, deleteUser } = useApi();
+  const { registerUser, fetchUsers, updateUserRoles, destroyUser } = useApi();
   const dispatch = useDispatch();
 
   const [search, setSearch] = useState("");
@@ -81,7 +81,7 @@ function UserAdminPage() {
               className="btn btn-danger btn-sm"
               onClick={async () => {
                 try {
-                  await deleteUser(id);
+                  await destroyUser(id);
                   await fetchUsers();
                   closeToast();
                 } catch (error) {
@@ -99,18 +99,9 @@ function UserAdminPage() {
         </div>
       ),
       {
-        position: "top-right",
         autoClose: false,
         closeOnClick: false,
         closeButton: false,
-        draggable: false,
-        pauseOnHover: true,
-        style: {
-          backgroundColor: "black",
-          color: "white",
-          borderRadius: "8px",
-          padding: "16px",
-        },
       }
     );
   };
