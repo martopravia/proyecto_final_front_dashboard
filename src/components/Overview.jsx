@@ -29,30 +29,43 @@ function Overview() {
           <img
             src="https://ubmbvouzxyajisbnmzeu.supabase.co/storage/v1/object/public/products/Components/fotoGrafifca.png"
             alt="Sales graph"
-            className="img-fluid rounded"
+            className="rounded"
+            style={{ width: "100%", height: "auto" }}
           />
         </div>
 
         <div className="col border rounded shadow p-4 bg-white">
-          <h5 className="fw-bold mb-4 fs-4">Top Selling</h5>
+          <h5 className="fw-bold mb-4 fs-4 text-center">
+            This month top sellers
+          </h5>
           <div className="d-flex flex-column gap-4">
             {topSelling.map((item) => (
-              <div key={item.id} className="d-flex align-items-center">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="rounded-circle me-3"
-                  style={{
-                    width: "60px",
-                    height: "60px",
-                    objectFit: "cover",
-                  }}
-                />
-                <div className="flex-grow-1">
+              <div
+                key={item.id}
+                className="d-flex align-items-center justify-content-between p-3 border rounded-3 shadow-sm mt-3"
+                style={{ minHeight: "90px" }}
+              >
+                <div className="d-flex align-items-center">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="rounded-circle me-3"
+                    style={{
+                      width: "70px",
+                      height: "70px",
+                      objectFit: "cover",
+                    }}
+                  />
                   <div className="fw-semibold fs-5">
                     {formatName(item.name)}
                   </div>
-                  <div className="text-muted fs-6">{item.sold} units sold</div>
+                </div>
+                <div>
+                  <div className="fw-bold">{item.sold} units sold</div>
+                  <div className="fw-bold fs-5">${item.price}</div>
+                </div>
+                <div className="fw-bold text-success fs-5">
+                  Total: ${item.sold * item.price}
                 </div>
               </div>
             ))}
@@ -67,7 +80,7 @@ function Overview() {
             <table className="table table-borderless align-middle fs-6">
               <thead>
                 <tr className="text-muted">
-                  <th>Order ID</th>
+                  <th>Id</th>
                   <th>Name</th>
                   <th>Status</th>
                   <th>Amount</th>

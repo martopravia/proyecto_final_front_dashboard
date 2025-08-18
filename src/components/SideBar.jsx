@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import { toast } from "react-toastify";
 import { logout } from "../redux/userSlice";
 import { useDispatch } from "react-redux";
@@ -84,6 +84,10 @@ function SideBar() {
           </NavLink>
         </li>
       </ul>
+      <Link to={"https://proyecto-final-front-public.vercel.app/"}>
+        <button className="btn btn-outline-light">Go to Ecommerce</button>
+      </Link>
+      <hr />
       <ResetDatabaseButton className="btn btn-danger">
         <i className="bi bi-gear-fill"></i> Reset Database
       </ResetDatabaseButton>
