@@ -84,7 +84,7 @@ function SideBar() {
           </NavLink>
         </li>
       </ul>
-      <Link to={"https://proyecto-final-front-public.vercel.app/"}>
+      <Link to={"https://studio-nora-ecommerce.vercel.app"}>
         <button className="btn btn-outline-light">Go to Ecommerce</button>
       </Link>
       <hr />
