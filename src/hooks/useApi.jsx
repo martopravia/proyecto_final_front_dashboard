@@ -100,11 +100,10 @@ export const useApi = () => {
       throw error;
     }
   };
-  const deleteUser = async (userId) => {
+  const destroyUser = async (userId) => {
     try {
       await api.delete(`/users/${userId}`);
       toast.success("User deleted successfully");
-      // Optionally, you can refetch users after deletion
       await fetchUsers();
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -268,7 +267,7 @@ export const useApi = () => {
     destroyProduct,
     registerUser,
     fetchUsers,
-    deleteUser,
+    destroyUser,
     updateUserRoles,
     getCategories,
     postCategory,

@@ -4,6 +4,7 @@ import { useApi } from "../hooks/useApi";
 import { useCategories } from "../hooks/useCategories";
 import FormCategory from "./FormCategory";
 import { formatName } from "../utils/formatName";
+import { toast } from "react-toastify";
 
 const emptyCategory = {
   id: "",
@@ -43,7 +44,37 @@ export default function CategoriesPage() {
   };
 
   const handleDeleteCategory = async (id) => {
-    await destroyCategory(id);
+    toast.info(
+      ({ closeToast }) => (
+        <div>
+          <p>Are you sure you want to delete?</p>
+          <div className="d-flex justify-content-end gap-2 mt-2">
+            <button
+              className="btn btn-danger btn-sm"
+              onClick={async () => {
+                try {
+                  await destroyCategory(id);
+                  closeToast();
+                } catch (error) {
+                  closeToast();
+                  toast.error("Failed to delete user", { theme: "dark" });
+                }
+              }}
+            >
+              Accept
+            </button>
+            <button className="btn btn-secondary btn-sm" onClick={closeToast}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+      }
+    );
   };
 
   const handleEditForm = (category) => {
