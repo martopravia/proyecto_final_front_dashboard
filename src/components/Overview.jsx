@@ -38,33 +38,38 @@ function Overview() {
           <h5 className="fw-bold mb-4 fs-4 text-center">
             This month top sellers
           </h5>
-          <div className="d-flex flex-column gap-4">
+          <div className="d-flex flex-column">
             {topSelling.map((item) => (
               <div
                 key={item.id}
-                className="d-flex align-items-center justify-content-between p-3 border rounded-3 shadow-sm mt-3"
+                className="row  align-items-center  p-3 border rounded-3 shadow-sm mt-3 text-center"
                 style={{ minHeight: "90px" }}
               >
-                <div className="d-flex align-items-center">
+                <div className=" col-4 d-flex align-items-center">
                   <img
                     src={item.image}
                     alt={item.name}
                     className="rounded-circle me-3"
                     style={{
-                      width: "70px",
+                      maxWidth: "70px",
                       height: "70px",
                       objectFit: "cover",
                     }}
                   />
-                  <div className="fw-semibold fs-5">
+                  <div
+                    className="fw-semibold fs-5"
+                    style={{
+                      maxWidth: "70px",
+                    }}
+                  >
                     {formatName(item.name)}
                   </div>
                 </div>
-                <div>
+                <div className="col-4">
                   <div className="fw-bold">{item.sold} units sold</div>
                   <div className="fw-bold fs-5">${item.price}</div>
                 </div>
-                <div className="fw-bold text-success fs-5">
+                <div className="col-4 fw-bold text-success fs-5">
                   Total: ${item.sold * item.price}
                 </div>
               </div>
